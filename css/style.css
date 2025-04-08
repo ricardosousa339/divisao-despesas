@@ -1,3 +1,8 @@
+/* Add this at the top of your CSS file */
+* {
+    box-sizing: border-box;
+}
+
 body {
     font-family: 'Segoe UI', Arial, sans-serif;
     margin: 0;
@@ -55,6 +60,7 @@ input[type="number"] {
     border-radius: 5px;
     transition: border-color 0.3s;
     font-size: 16px;
+    box-sizing: border-box; /* Add this line */
 }
 
 input[type="text"]:focus,
