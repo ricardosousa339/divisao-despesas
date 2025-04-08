@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Divisor de Despesas</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Divisor de Despesas</h1>
+        <form id="expense-form">
+            <input type="text" id="name" placeholder="Nome da pessoa" required>
+            <input type="number" id="amount" placeholder="Valor da despesa" step="0.01" required>
+            <input type="hidden" id="expense-id">
+            <button type="submit">Adicionar Despesa</button>
+        </form>
+        <div>
+            <h2>Lista de Despesas</h2>
+            <ul id="expense-list"></ul>
+        </div>
+        <div id="summary">
+            <h2>Resumo</h2>
+            <p id="total-display">Total: R$ 0.00</p>
+            <p id="cost-per-person">Custo por pessoa: R$ 0.00</p>
+            <div id="adjustments"></div>
+        </div>
+    </div>
+    <script src="js/expense.js"></script>
+    <script src="js/calculations.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
