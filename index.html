@@ -9,25 +9,106 @@
 <body>
     <div class="container">
         <h1>Divisor de Despesas</h1>
-        <form id="expense-form">
-            <input type="text" id="name" placeholder="Nome da pessoa" required>
-            <input type="number" id="amount" placeholder="Valor da despesa" step="0.01" required>
-            <input type="hidden" id="expense-id">
-            <button type="submit">Adicionar Despesa</button>
-        </form>
-        <div>
-            <h2>Lista de Despesas</h2>
-            <ul id="expense-list"></ul>
+        
+        <div class="steps-guide">
+            <p>Como usar:</p>
+            <ol>
+                <li>Adicione uma pessoa e o valor que ela gastou</li>
+                <li>Selecione quem vai participar da despesa (se nenhuma pessoa for selecionada, todos participarão)</li>
+                <li>Veja o resumo abaixo para saber quem deve pagar/receber</li>
+            </ol>
         </div>
-        <div id="summary">
-            <h2>Resumo</h2>
-            <p id="total-display">Total: R$ 0.00</p>
-            <p id="cost-per-person">Custo por pessoa: R$ 0.00</p>
-            <div id="adjustments"></div>
+
+        <div class="tab-container">
+            <div class="tab-buttons">
+                <button class="tab-button active" onclick="switchTab('add-expense')">Adicionar Despesa</button>
+                <button class="tab-button" onclick="switchTab('view-expenses')">Ver Despesas</button>
+                <button class="tab-button" onclick="switchTab('summary-tab')">Resumo</button>
+            </div>
+            
+            <div class="tab-content">
+                <div id="add-expense" class="tab-pane active">
+                    <form id="expense-form" class="section">
+                        <div class="form-group">
+                            <label for="name">Quem pagou:</label>
+                            <input type="text" id="name" placeholder="Nome da pessoa" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="amount">Valor gasto:</label>
+                            <input type="number" id="amount" placeholder="0.00" step="0.01" required>
+                        </div>
+                        
+                        <input type="hidden" id="expense-id">
+                        
+                        <div id="participants-section">
+                            <h3>Quem vai participar desta despesa?</h3>
+                            <p class="help-text">Se nenhuma pessoa for selecionada, todos participarão igualmente.</p>
+                            <div id="participants-list" class="checkbox-group">
+                                <!-- Participants checkboxes will be added here dynamically -->
+                                <p id="no-participants-message" class="no-participants-message">Adicione uma despesa primeiro para ver as pessoas disponíveis.</p>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn-primary" id="submit-button">Adicionar Despesa</button>
+                    </form>
+                </div>
+                
+                <div id="view-expenses" class="tab-pane">
+                    <div class="section">
+                        <h2>Lista de Despesas</h2>
+                        <ul id="expense-list" class="expense-list">
+                            <!-- Expenses will be listed here -->
+                            <li class="no-participants-message">Nenhuma despesa adicionada ainda.</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div id="summary-tab" class="tab-pane">
+                    <div id="summary" class="summary">
+                        <h2>Resumo das Despesas</h2>
+                        <p id="total-display">Total: R$ 0.00</p>
+                        <p id="cost-per-person">Custo por pessoa: R$ 0.00</p>
+                        <h3>Ajustes necessários:</h3>
+                        <div id="adjustments">
+                            <p class="no-participants-message">Adicione despesas para ver os ajustes necessários.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div>
+            <h2>Pessoas Participantes</h2>
+            <div id="people-list">
+                <!-- List of all people will appear here -->
+                <p class="no-participants-message">Nenhuma pessoa adicionada ainda.</p>
+            </div>
         </div>
     </div>
+    
     <script src="js/expense.js"></script>
     <script src="js/calculations.js"></script>
     <script src="js/app.js"></script>
+    
+    <script>
+        function switchTab(tabId) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-pane').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Deactivate all tab buttons
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            // Show the selected tab
+            document.getElementById(tabId).classList.add('active');
+            
+            // Activate the clicked button
+            event.target.classList.add('active');
+        }
+    </script>
 </body>
 </html>

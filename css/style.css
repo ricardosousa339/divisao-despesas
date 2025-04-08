@@ -1,42 +1,112 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', Arial, sans-serif;
     margin: 0;
     padding: 20px;
-    background-color: #f4f4f4;
+    background-color: #f0f2f5;
+    color: #333;
+    line-height: 1.6;
+}
+
+h1, h2, h3 {
+    color: #2c3e50;
+    margin-top: 0;
 }
 
 h1 {
-    color: #333;
+    text-align: center;
+    margin-bottom: 30px;
+    color: #3498db;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #ecf0f1;
 }
 
 .container {
-    max-width: 600px;
+    max-width: 800px;
     margin: auto;
     background: #fff;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
+}
+
+.section {
     padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
 }
 
 input[type="text"],
-input[type="number"],
+input[type="number"] {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    transition: border-color 0.3s;
+    font-size: 16px;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus {
+    border-color: #3498db;
+    outline: none;
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+}
+
 button {
     width: 100%;
-    padding: 10px;
+    padding: 12px;
     margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-button {
-    background-color: #28a745;
-    color: white;
     border: none;
+    border-radius: 5px;
     cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s;
 }
 
-button:hover {
-    background-color: #218838;
+.btn-primary {
+    background-color: #3498db;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #2980b9;
+}
+
+.btn-success {
+    background-color: #2ecc71;
+    color: white;
+}
+
+.btn-success:hover {
+    background-color: #27ae60;
+}
+
+.btn-danger {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #c0392b;
+}
+
+.btn-sm {
+    padding: 5px 10px;
+    font-size: 14px;
+    width: auto;
 }
 
 .expense-list {
@@ -48,21 +118,182 @@ button:hover {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px;
-    border-bottom: 1px solid #ccc;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    background-color: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
 }
 
-.expense-item button {
-    background-color: #dc3545;
+.expense-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
 }
 
-.expense-item button:hover {
-    background-color: #c82333;
+.expense-item small {
+    display: block;
+    color: #7f8c8d;
+    font-size: 0.85em;
+    margin-top: 5px;
+}
+
+.expense-info {
+    flex-grow: 1;
+}
+
+.expense-amount {
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.button-group {
+    display: flex;
+    gap: 8px;
 }
 
 .summary {
+    background-color: #2c3e50;
+    color: #fff;
+    padding: 20px;
+    border-radius: 8px;
     margin-top: 20px;
+}
+
+.summary h2 {
+    color: #ecf0f1;
+    border-bottom: 1px solid #34495e;
+    padding-bottom: 10px;
+}
+
+.summary p {
+    font-size: 18px;
+    margin: 15px 0;
+}
+
+.adjustment-item {
     padding: 10px;
-    background-color: #e2e3e5;
+    margin: 5px 0;
     border-radius: 5px;
+    background-color: #34495e;
+}
+
+.adjustment-positive {
+    border-left: 4px solid #2ecc71;
+}
+
+.adjustment-negative {
+    border-left: 4px solid #e74c3c;
+}
+
+.adjustment-neutral {
+    border-left: 4px solid #f1c40f;
+}
+
+#participants-section {
+    margin: 15px 0;
+    padding: 15px;
+    background-color: #ecf0f1;
+    border-radius: 5px;
+}
+
+.help-text {
+    color: #7f8c8d;
+    font-size: 0.9em;
+    margin-top: 5px;
+    margin-bottom: 15px;
+}
+
+.checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.checkbox-group label {
+    margin-right: 15px;
+    display: flex;
+    align-items: center;
+    padding: 5px 10px;
+    background-color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.checkbox-group label:hover {
+    background-color: #e0e7ff;
+}
+
+.checkbox-group input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+#people-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+#people-list div {
+    background: #3498db;
+    color: white;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+}
+
+.steps-guide {
+    margin-bottom: 25px;
+    padding: 15px;
+    background-color: #e0f7fa;
+    border-radius: 5px;
+    border-left: 4px solid #00acc1;
+}
+
+.no-participants-message {
+    text-align: center;
+    padding: 15px;
+    color: #7f8c8d;
+    font-style: italic;
+}
+
+.tab-container {
+    margin-bottom: 20px;
+}
+
+.tab-buttons {
+    display: flex;
+    border-bottom: 1px solid #ddd;
+}
+
+.tab-button {
+    padding: 10px 20px;
+    background-color: #f8f9fa;
+    border: none;
+    border-radius: 5px 5px 0 0;
+    cursor: pointer;
+    margin-right: 5px;
+    font-weight: bold;
+}
+
+.tab-button.active {
+    background-color: #3498db;
+    color: white;
+}
+
+.tab-content {
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 0 0 5px 5px;
+}
+
+.tab-pane {
+    display: none;
+}
+
+.tab-pane.active {
+    display: block;
 }
