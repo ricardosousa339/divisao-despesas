@@ -13,9 +13,10 @@
         <div class="steps-guide">
             <p>Como usar:</p>
             <ol>
-                <li>Adicione uma pessoa e o valor que ela gastou</li>
+                <li>Adicione a descrição da despesa (ex: "Almoço", "Hotel", "Gasolina")</li>
+                <li>Selecione quem pagou a despesa e o valor</li>
                 <li>Selecione quem vai participar da despesa (se nenhuma pessoa for selecionada, todos participarão)</li>
-                <li>Veja o resumo abaixo para saber quem deve pagar/receber</li>
+                <li>Veja o resumo para saber quem deve pagar/receber</li>
             </ol>
         </div>
 
@@ -30,8 +31,13 @@
                 <div id="add-expense" class="tab-pane active">
                     <form id="expense-form" class="section">
                         <div class="form-group">
-                            <label for="name">Quem pagou:</label>
-                            <input type="text" id="name" placeholder="Nome da pessoa" required>
+                            <label for="description">Descrição da despesa:</label>
+                            <input type="text" id="description" placeholder="Ex: Almoço, Hotel, Gasolina" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="payer">Quem pagou:</label>
+                            <input type="text" id="payer" placeholder="Nome da pessoa" required>
                         </div>
                         
                         <div class="form-group">

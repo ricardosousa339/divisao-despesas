@@ -297,3 +297,79 @@ button {
 .tab-pane.active {
     display: block;
 }
+
+/* Add these rules to the end of your existing style.css file */
+
+.expense-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.expense-description {
+    font-weight: bold;
+    font-size: 1.1em;
+    color: #2c3e50;
+}
+
+.expense-payer {
+    display: block;
+    color: #7f8c8d;
+    font-size: 0.85em;
+    margin-bottom: 3px;
+}
+
+/* Optional: add a highlight for the payer's name */
+.expense-payer {
+    color: #3498db;
+    font-weight: 500;
+}
+
+/* Add these rules to the end of your existing style.css file */
+
+.transactions-header {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #34495e;
+    color: #ecf0f1;
+}
+
+.transactions-section {
+    margin-top: 10px;
+}
+
+.transaction-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    margin: 8px 0;
+    background-color: #34495e;
+    border-radius: 5px;
+    border-left: 4px solid #3498db;
+}
+
+.transaction-debtor {
+    font-weight: bold;
+    color: #e74c3c;
+}
+
+.transaction-arrow {
+    margin: 0 10px;
+    font-size: 20px;
+    color: #7f8c8d;
+}
+
+.transaction-creditor {
+    font-weight: bold;
+    color: #2ecc71;
+}
+
+.transaction-amount {
+    margin-left: auto;
+    font-weight: bold;
+}
+
+.adjustments-section {
+    margin-bottom: 15px;
+}

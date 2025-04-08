@@ -1,13 +1,18 @@
 class Expense {
-    constructor(name, amount, payer) {
-        this.name = name;
+    constructor(description, amount, payer, participants = []) {
+        this.description = description;
         this.amount = amount;
         this.payer = payer;
+        this.participants = participants;
     }
 
-    editExpense(newName, newAmount) {
-        this.name = newName;
+    editExpense(newDescription, newAmount, newPayer, newParticipants) {
+        this.description = newDescription;
         this.amount = newAmount;
+        this.payer = newPayer;
+        if (newParticipants) {
+            this.participants = newParticipants;
+        }
     }
 
     static deleteExpense(expenses, expenseToDelete) {
@@ -15,15 +20,16 @@ class Expense {
     }
 } 
 
-function createExpense(name, amount, payer) {
-    return new Expense(name, amount, payer);
+function createExpense(description, amount, payer, participants = []) {
+    return new Expense(description, amount, payer, participants);
 } 
 
 function getExpenseDetails(expense) {
     return {
-        name: expense.name,
+        description: expense.description,
         amount: expense.amount,
-        payer: expense.payer
+        payer: expense.payer,
+        participants: expense.participants
     };
 }
 

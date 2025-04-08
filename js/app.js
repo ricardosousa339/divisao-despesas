@@ -17,7 +17,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     expenseForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        const name = document.getElementById('name').value;
+        const description = document.getElementById('description').value;
+        const payer = document.getElementById('payer').value;
         const amount = parseFloat(document.getElementById('amount').value);
         const id = document.getElementById('expense-id').value;
         
@@ -30,25 +31,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Always make sure the payer is included in participants
         // Only if they were explicitly unchecked during edit, we'll respect that choice
-        if (!id && !selectedParticipants.includes(name)) {
-            selectedParticipants.push(name);
+        if (!id && !selectedParticipants.includes(payer)) {
+            selectedParticipants.push(payer);
         }
 
         if (id) {
-            editExpense(id, name, amount, selectedParticipants);
+            editExpense(id, description, amount, payer, selectedParticipants);
             showNotification("Despesa atualizada com sucesso!");
             submitButton.textContent = "Adicionar Despesa";
             submitButton.classList.remove("btn-success");
             submitButton.classList.add("btn-primary");
             editMode = false;
         } else {
-            addExpense(name, amount, selectedParticipants);
+            addExpense(description, amount, payer, selectedParticipants);
             showNotification("Despesa adicionada com sucesso!");
         }
 
         // Add this person to our list of people if they're new
-        if (!people.has(name)) {
-            people.add(name);
+        if (!people.has(payer)) {
+            people.add(payer);
             updatePeopleList();
         }
 
@@ -60,11 +61,12 @@ document.addEventListener('DOMContentLoaded', () => {
         switchTab('view-expenses');
     });
 
-    function addExpense(name, amount, participants) {
+    function addExpense(description, amount, payer, participants) {
         const expense = { 
             id: Date.now(), 
-            name, 
+            description, 
             amount, 
+            payer, 
             participants 
         };
         expenses.push(expense);
@@ -72,13 +74,14 @@ document.addEventListener('DOMContentLoaded', () => {
         updateSummary();
     }
 
-    function editExpense(id, name, amount, participants) {
+    function editExpense(id, description, amount, payer, participants) {
         const index = expenses.findIndex(exp => exp.id == id);
         if (index > -1) {
             expenses[index] = { 
                 id: parseInt(id), 
-                name, 
+                description, 
                 amount, 
+                payer, 
                 participants 
             };
             renderExpenses();
@@ -119,8 +122,11 @@ document.addEventListener('DOMContentLoaded', () => {
             
             li.innerHTML = `
                 <div class="expense-info">
-                    <span class="expense-name">${exp.name}</span>
-                    <span class="expense-amount">R$ ${exp.amount.toFixed(2)}</span>
+                    <div class="expense-title">
+                        <span class="expense-description">${exp.description}</span>
+                        <span class="expense-amount">R$ ${exp.amount.toFixed(2)}</span>
+                    </div>
+                    <small class="expense-payer">Pago por: ${exp.payer}</small>
                     ${participantsText}
                 </div>
                 <div class="button-group">
@@ -179,6 +185,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Update the updateSummary function to fix the balance display
+
     function updateSummary() {
         if (expenses.length === 0) {
             totalDisplay.textContent = `Total: R$ 0.00`;
@@ -191,23 +199,75 @@ document.addEventListener('DOMContentLoaded', () => {
         totalDisplay.textContent = `Total: R$ ${summary.totalExpenses.toFixed(2)}`;
         costPerPersonDisplay.textContent = `Custo por pessoa: R$ ${summary.costPerPerson.toFixed(2)}`;
         
-        adjustmentsDisplay.innerHTML = '';
+        adjustmentsDisplay.innerHTML = '<h3>Detalhes por pessoa:</h3>';
+        
+        // Display individual adjustments
+        const adjustmentsSection = document.createElement('div');
+        adjustmentsSection.className = 'adjustments-section';
+        
+        // Create a map of people who owe money or will receive money
+        const transactionMap = new Map();
+        
+        // Initialize the map with everyone at 0
         summary.adjustments.forEach(adj => {
+            transactionMap.set(adj.name, 0);
+        });
+        
+        // Add transaction amounts to the map
+        summary.transactions.forEach(transaction => {
+            // The person who needs to pay (debtor) has a negative amount
+            transactionMap.set(transaction.from, 
+                (transactionMap.get(transaction.from) || 0) - transaction.amount);
+            
+            // The person who receives (creditor) has a positive amount
+            transactionMap.set(transaction.to, 
+                (transactionMap.get(transaction.to) || 0) + transaction.amount);
+        });
+        
+        // Now display the balance based on the transaction map
+        for (const [name, amount] of transactionMap.entries()) {
             const div = document.createElement('div');
             
-            if (adj.adjustment > 0) {
-                div.classList.add('adjustment-item', 'adjustment-positive');
-                div.textContent = `${adj.name} deve receber R$ ${adj.adjustment.toFixed(2)}`;
-            } else if (adj.adjustment < 0) {
-                div.classList.add('adjustment-item', 'adjustment-negative');
-                div.textContent = `${adj.name} deve pagar R$ ${Math.abs(adj.adjustment).toFixed(2)}`;
-            } else {
+            if (Math.abs(amount) < 0.01) { // Using a small threshold to handle floating-point issues
                 div.classList.add('adjustment-item', 'adjustment-neutral');
-                div.textContent = `${adj.name} está equilibrado`;
+                div.textContent = `${name} está equilibrado`;
+            } else if (amount > 0) {
+                div.classList.add('adjustment-item', 'adjustment-positive');
+                div.textContent = `${name} deve receber R$ ${amount.toFixed(2)}`;
+            } else if (amount < 0) {
+                div.classList.add('adjustment-item', 'adjustment-negative');
+                div.textContent = `${name} deve pagar R$ ${Math.abs(amount).toFixed(2)}`;
             }
             
-            adjustmentsDisplay.appendChild(div);
-        });
+            adjustmentsSection.appendChild(div);
+        }
+        
+        adjustmentsDisplay.appendChild(adjustmentsSection);
+        
+        // Display payment transactions
+        if (summary.transactions.length > 0) {
+            const transactionsHeader = document.createElement('h3');
+            transactionsHeader.textContent = 'Pagamentos sugeridos:';
+            transactionsHeader.className = 'transactions-header';
+            adjustmentsDisplay.appendChild(transactionsHeader);
+            
+            const transactionsSection = document.createElement('div');
+            transactionsSection.className = 'transactions-section';
+            
+            summary.transactions.forEach(transaction => {
+                const div = document.createElement('div');
+                div.classList.add('transaction-item');
+                div.innerHTML = `
+                    <span class="transaction-debtor">${transaction.from}</span>
+                    <span class="transaction-arrow">→</span>
+                    <span class="transaction-creditor">${transaction.to}</span>
+                    <span class="transaction-amount">R$ ${transaction.amount.toFixed(2)}</span>
+                `;
+                transactionsSection.appendChild(div);
+            });
+            
+            adjustmentsDisplay.appendChild(transactionsSection);
+        }
     }
 
     function showNotification(message) {
@@ -257,7 +317,8 @@ document.addEventListener('DOMContentLoaded', () => {
     window.editExpensePrompt = (id) => {
         const expense = expenses.find(exp => exp.id == id);
         if (expense) {
-            document.getElementById('name').value = expense.name;
+            document.getElementById('description').value = expense.description;
+            document.getElementById('payer').value = expense.payer;
             document.getElementById('amount').value = expense.amount;
             document.getElementById('expense-id').value = expense.id;
             
@@ -282,7 +343,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Then check only those who are participants (and make sure payer is checked)
                 checkboxes.forEach(checkbox => {
                     // Always check the payer's checkbox
-                    if (checkbox.value === expense.name) {
+                    if (checkbox.value === expense.payer) {
                         checkbox.checked = true;
                     }
                     // Check other participants from the saved list
