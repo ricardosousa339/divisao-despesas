@@ -28,6 +28,12 @@ document.addEventListener('DOMContentLoaded', () => {
             selectedParticipants.push(checkbox.value);
         });
 
+        // Always make sure the payer is included in participants
+        // Only if they were explicitly unchecked during edit, we'll respect that choice
+        if (!id && !selectedParticipants.includes(name)) {
+            selectedParticipants.push(name);
+        }
+
         if (id) {
             editExpense(id, name, amount, selectedParticipants);
             showNotification("Despesa atualizada com sucesso!");
@@ -267,8 +273,22 @@ document.addEventListener('DOMContentLoaded', () => {
             // Update the participant checkboxes after a short delay to ensure they're rendered
             setTimeout(() => {
                 const checkboxes = document.querySelectorAll('#participants-list input[type="checkbox"]');
+                
+                // First, uncheck all checkboxes
                 checkboxes.forEach(checkbox => {
-                    checkbox.checked = expense.participants && expense.participants.includes(checkbox.value);
+                    checkbox.checked = false;
+                });
+                
+                // Then check only those who are participants (and make sure payer is checked)
+                checkboxes.forEach(checkbox => {
+                    // Always check the payer's checkbox
+                    if (checkbox.value === expense.name) {
+                        checkbox.checked = true;
+                    }
+                    // Check other participants from the saved list
+                    else if (expense.participants && expense.participants.includes(checkbox.value)) {
+                        checkbox.checked = true;
+                    }
                 });
             }, 100);
         }
