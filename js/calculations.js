@@ -28,11 +28,21 @@ function calculatePersonExpenses(expenses, personName) {
             totalPaid += expense.amount;
         }
         
-        // Calculate how much this person owes for this expense
-        const participants = expense.participants && expense.participants.length > 0 
-            ? expense.participants 
-            : getAllParticipants(expenses);
+        // Determine participants for this expense
+        let participants;
         
+        if (expense.participants && expense.participants.length > 0) {
+            // Se há participantes explícitos, usá-los
+            participants = expense.participants;
+        } else if (expense.allParticipantsAtCreation && expense.allParticipantsAtCreation.length > 0) {
+            // Para compatibilidade com despesas antigas
+            participants = expense.allParticipantsAtCreation;
+        } else {
+            // Fallback para despesas antigas - usar todos os participantes
+            participants = getAllParticipants(expenses);
+        }
+        
+        // Check if this person is a participant in this expense
         if (participants.includes(personName)) {
             const sharePerPerson = expense.amount / participants.length;
             totalOwed += sharePerPerson;
