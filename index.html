@@ -10,25 +10,51 @@
     <div class="container">
         <h1>Divisor de Despesas</h1>
         
-        <div class="steps-guide">
-            <p>Como usar:</p>
-            <ol>
-                <li>Adicione a descrição da despesa (ex: "Almoço", "Hotel", "Gasolina")</li>
-                <li>Selecione quem pagou a despesa e o valor</li>
-                <li>Selecione quem vai participar da despesa (se nenhuma pessoa for selecionada, todos participarão)</li>
-                <li>Veja o resumo para saber quem deve pagar/receber</li>
-            </ol>
+        <div class="steps-guide-container">
+            <div class="steps-guide-header" onclick="toggleStepsGuide()">
+                <h3>Como usar <span class="toggle-icon">+</span></h3>
+            </div>
+            <div class="steps-guide" id="steps-guide">
+                <ol>
+                    <li>Adicione as pessoas que participarão das despesas</li>
+                    <li>Adicione a descrição da despesa (ex: "Almoço", "Hotel", "Gasolina")</li>
+                    <li>Selecione quem pagou a despesa e o valor</li>
+                    <li>Selecione quem vai participar da despesa (se nenhuma pessoa for selecionada, todos participarão)</li>
+                    <li>Veja o resumo para saber quem deve pagar/receber</li>
+                </ol>
+            </div>
         </div>
 
         <div class="tab-container">
             <div class="tab-buttons">
-                <button class="tab-button active" onclick="switchTab('add-expense')">Adicionar Despesa</button>
+                <button class="tab-button active" onclick="switchTab('manage-people')">Gerenciar Pessoas</button>
+                <button class="tab-button" onclick="switchTab('add-expense')">Adicionar Despesa</button>
                 <button class="tab-button" onclick="switchTab('view-expenses')">Ver Despesas</button>
                 <button class="tab-button" onclick="switchTab('summary-tab')">Resumo</button>
             </div>
             
             <div class="tab-content">
-                <div id="add-expense" class="tab-pane active">
+                <div id="manage-people" class="tab-pane active">
+                    <div class="section">
+                        <h2>Gerenciar Pessoas</h2>
+                        <form id="person-form" class="section">
+                            <div class="form-group">
+                                <label for="person-name">Nome da Pessoa:</label>
+                                <input type="text" id="person-name" placeholder="Digite o nome da pessoa" required>
+                            </div>
+                            <button type="submit" class="btn-primary" id="add-person-button">Adicionar Pessoa</button>
+                        </form>
+                        <div class="manage-people-list">
+                            <h3>Pessoas Cadastradas</h3>
+                            <div id="manage-people-list">
+                                <!-- List of people will appear here -->
+                                <p class="no-participants-message">Nenhuma pessoa adicionada ainda.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="add-expense" class="tab-pane">
                     <form id="expense-form" class="section">
                         <div class="form-group">
                             <label for="description">Descrição da despesa:</label>
@@ -37,7 +63,10 @@
                         
                         <div class="form-group">
                             <label for="payer">Quem pagou:</label>
-                            <input type="text" id="payer" placeholder="Nome da pessoa" required>
+                            <select id="payer" required>
+                                <option value="">Selecione quem pagou</option>
+                                <!-- Opções serão preenchidas dinamicamente -->
+                            </select>
                         </div>
                         
                         <div class="form-group">
@@ -49,7 +78,7 @@
                         
                         <div id="participants-section">
                             <h3>Quem vai participar desta despesa?</h3>
-                            <p class="help-text">Se nenhuma pessoa for selecionada, todos participarão igualmente.</p>
+                            <p class="help-text">Se nenhuma pessoa for selecionada, todos serão participantes dela.</p>
                             <div id="participants-list" class="checkbox-group">
                                 <!-- Participants checkboxes will be added here dynamically -->
                                 <p id="no-participants-message" class="no-participants-message">Adicione uma despesa primeiro para ver as pessoas disponíveis.</p>
@@ -74,21 +103,15 @@
                     <div id="summary" class="summary">
                         <h2>Resumo das Despesas</h2>
                         <p id="total-display">Total: R$ 0.00</p>
-                        <p id="cost-per-person">Custo por pessoa: R$ 0.00</p>
+                        <div id="expense-distribution">
+                            <!-- Aqui será mostrada a distribuição de valores por pessoa -->
+                        </div>
                         <h3>Ajustes necessários:</h3>
                         <div id="adjustments">
                             <p class="no-participants-message">Adicione despesas para ver os ajustes necessários.</p>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        
-        <div>
-            <h2>Pessoas Participantes</h2>
-            <div id="people-list">
-                <!-- List of all people will appear here -->
-                <p class="no-participants-message">Nenhuma pessoa adicionada ainda.</p>
             </div>
         </div>
     </div>
@@ -115,6 +138,25 @@
             // Activate the clicked button
             event.target.classList.add('active');
         }
+        
+        // Função para alternar a visibilidade da seção "Como usar"
+        function toggleStepsGuide() {
+            const guide = document.getElementById('steps-guide');
+            const icon = document.querySelector('.toggle-icon');
+            
+            if (guide.style.display === 'none' || guide.style.display === '') {
+                guide.style.display = 'block';
+                icon.textContent = '-';
+            } else {
+                guide.style.display = 'none';
+                icon.textContent = '+';
+            }
+        }
+        
+        // Inicializa a seção "Como usar" como recolhida
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('steps-guide').style.display = 'none';
+        });
     </script>
 </body>
 </html>

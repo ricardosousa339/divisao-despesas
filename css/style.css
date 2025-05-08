@@ -52,7 +52,8 @@ h1 {
 }
 
 input[type="text"],
-input[type="number"] {
+input[type="number"],
+select {
     width: 100%;
     padding: 12px;
     margin-bottom: 15px;
@@ -64,7 +65,8 @@ input[type="number"] {
 }
 
 input[type="text"]:focus,
-input[type="number"]:focus {
+input[type="number"]:focus,
+select:focus {
     border-color: #3498db;
     outline: none;
     box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
@@ -161,15 +163,26 @@ button {
 .summary {
     background-color: #2c3e50;
     color: #fff;
-    padding: 20px;
+    padding: 15px;
     border-radius: 8px;
-    margin-top: 20px;
+    margin-top: 10px;
 }
 
 .summary h2 {
     color: #ecf0f1;
     border-bottom: 1px solid #34495e;
-    padding-bottom: 10px;
+    padding-bottom: 8px;
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.summary h3 {
+    margin-top: 12px;
+    margin-bottom: 8px;
+}
+
+#total-display {
+    margin: 10px 0;
 }
 
 .summary p {
@@ -178,8 +191,8 @@ button {
 }
 
 .adjustment-item {
-    padding: 10px;
-    margin: 5px 0;
+    padding: 8px;
+    margin: 4px 0;
     border-radius: 5px;
     background-color: #34495e;
 }
@@ -251,12 +264,55 @@ button {
     font-size: 14px;
 }
 
-.steps-guide {
-    margin-bottom: 25px;
-    padding: 15px;
-    background-color: #e0f7fa;
+.steps-guide-container {
+    margin-bottom: 20px;
+    background-color: #f8f9fa;
     border-radius: 5px;
     border-left: 4px solid #00acc1;
+    overflow: hidden;
+}
+
+.steps-guide-header {
+    padding: 10px 15px;
+    cursor: pointer;
+    background-color: #e0f7fa;
+    transition: background-color 0.2s;
+    display: flex;
+    align-items: center;
+}
+
+.steps-guide-header:hover {
+    background-color: #b3e5fc;
+}
+
+.steps-guide-header h3 {
+    margin: 0;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    color: #0288d1;
+}
+
+.toggle-icon {
+    font-weight: bold;
+    font-size: 18px;
+    color: #0288d1;
+}
+
+.steps-guide {
+    padding: 0 15px 15px 15px;
+    margin: 0;
+    border-top: 1px solid #b3e5fc;
+}
+
+.steps-guide ol {
+    margin-top: 10px;
+    margin-bottom: 5px;
+    padding-left: 25px;
+}
+
+.steps-guide li {
+    margin-bottom: 5px;
 }
 
 .no-participants-message {
@@ -288,6 +344,17 @@ button {
 .tab-button.active {
     background-color: #3498db;
     color: white;
+}
+
+/* Estilo para botão de aba desabilitado */
+.tab-button[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.tab-button[disabled]:hover {
+    background-color: #f8f9fa;
 }
 
 .tab-content {
@@ -335,8 +402,8 @@ button {
 /* Add these rules to the end of your existing style.css file */
 
 .transactions-header {
-    margin-top: 20px;
-    padding-top: 15px;
+    margin-top: 15px;
+    padding-top: 10px;
     border-top: 1px solid #34495e;
     color: #ecf0f1;
 }
@@ -348,8 +415,8 @@ button {
 .transaction-item {
     display: flex;
     align-items: center;
-    padding: 10px 15px;
-    margin: 8px 0;
+    padding: 8px 12px;
+    margin: 5px 0;
     background-color: #34495e;
     border-radius: 5px;
     border-left: 4px solid #3498db;
@@ -378,4 +445,288 @@ button {
 
 .adjustments-section {
     margin-bottom: 15px;
+}
+
+/* Estilos para a seção de gerenciamento de pessoas */
+.manage-people-list {
+    margin-top: 20px;
+}
+
+#manage-people-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+#manage-people-list div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #3498db;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+    min-width: 150px;
+}
+
+#manage-people-list button {
+    background: none;
+    border: none;
+    color: white;
+    margin-left: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 0;
+    width: auto;
+}
+
+#manage-people-list button:hover {
+    color: #e74c3c;
+}
+
+/* Estilo para mensagem "Adicione pessoas primeiro" */
+.select-message {
+    color: #7f8c8d;
+    font-style: italic;
+}
+
+/* Estilos para a seção de distribuição de despesas */
+.distribution-section {
+    margin-bottom: 20px;
+}
+
+.person-expense-item {
+    background-color: #34495e;
+    padding: 12px 15px;
+    margin: 8px 0;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.person-name {
+    font-weight: bold;
+    font-size: 1.1em;
+    color: #ecf0f1;
+    flex-basis: 30%;
+}
+
+.person-details {
+    flex-basis: 65%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.paid-amount {
+    color: #2ecc71;
+    font-weight: bold;
+    margin-right: 15px;
+}
+
+.owed-amount {
+    color: #e74c3c;
+    font-weight: bold;
+    margin-right: 15px;
+}
+
+.participation-percentage {
+    color: #7f8c8d;
+    font-style: italic;
+}
+
+@media (max-width: 600px) {
+    .person-expense-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .person-name {
+        margin-bottom: 8px;
+    }
+    
+    .person-details {
+        flex-direction: column;
+    }
+    
+    .paid-amount, .owed-amount {
+        margin-bottom: 5px;
+    }
+}
+
+/* Estilos para a tabela de resumo de despesas */
+.expenses-summary-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 10px;
+    color: #ecf0f1;
+    background-color: #34495e;
+    border-radius: 5px;
+    overflow: hidden;
+    table-layout: fixed; /* Fixa o layout da tabela para melhor controle */
+}
+
+.expenses-summary-table th, 
+.expenses-summary-table td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #2c3e50;
+}
+
+.expenses-summary-table th {
+    background-color: #2c3e50;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.9em;
+}
+
+.expenses-summary-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* Ajusta o alinhamento de textos e larguras das colunas */
+.expenses-summary-table .person-name {
+    width: 30%;
+    text-align: left;
+}
+
+.expenses-summary-table .amount {
+    width: 17.5%;
+    text-align: right;
+    font-weight: bold;
+}
+
+.expenses-summary-table .percentage {
+    width: 17.5%;
+    text-align: center;
+    font-style: italic;
+    color: #bdc3c7;
+}
+
+.expenses-summary-table th.amount,
+.expenses-summary-table th.percentage {
+    text-align: center; /* Centraliza o texto dos cabeçalhos */
+}
+
+.expenses-summary-table .paid-amount {
+    color: #2ecc71;
+}
+
+.expenses-summary-table .owed-amount {
+    color: #e74c3c;
+}
+
+.expenses-summary-table .balance-amount {
+    font-weight: bold;
+}
+
+/* Estilo para linhas baseadas no balanço */
+.expenses-summary-table .balance-positive .balance-amount {
+    color: #2ecc71;
+}
+
+.expenses-summary-table .balance-negative .balance-amount {
+    color: #e74c3c;
+}
+
+.expenses-summary-table .balance-neutral .balance-amount {
+    color: #f1c40f;
+}
+
+/* Estilo para a legenda explicativa */
+.summary-legend {
+    background-color: #2c3e50;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 5px;
+    font-size: 0.9em;
+}
+
+.summary-legend p {
+    margin-top: 0;
+    margin-bottom: 5px;
+}
+
+.summary-legend ul {
+    padding-left: 20px;
+    margin-top: 5px;
+    margin-bottom: 0;
+}
+
+.summary-legend li {
+    margin-bottom: 5px;
+}
+
+/* Estilos para o ícone de ajuda e conteúdo */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.section-header h3 {
+    margin: 0;
+}
+
+.help-icon {
+    width: 20px;
+    height: 20px;
+    background-color: #3498db;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.help-icon:hover {
+    background-color: #2980b9;
+}
+
+.help-content {
+    background-color: #2c3e50;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 15px;
+    position: relative;
+    border-left: 4px solid #3498db;
+}
+
+.help-content p {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.help-content ul {
+    padding-left: 20px;
+    margin-bottom: 10px;
+}
+
+.help-content li {
+    margin-bottom: 5px;
+}
+
+.close-help {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 12px;
+    margin-top: 10px;
+    width: auto;
+}
+
+.close-help:hover {
+    background-color: #2980b9;
 }
