@@ -1,55 +1,59 @@
-# Expense Splitter
+# Divisor de Despesas
 
-## Overview
-The Expense Splitter is a simple web application designed to help users manage and split expenses among multiple people. Users can add, edit, and delete expenses, as well as view a summary of total expenses and how much each person owes or is owed.
+## Visão Geral
+O Divisor de Despesas é uma aplicação web simples projetada para ajudar os usuários a gerenciar e dividir despesas entre várias pessoas. Os usuários podem adicionar, editar e excluir despesas, bem como visualizar um resumo das despesas totais e quanto cada pessoa deve ou tem a receber.
 
-## Features
-- Add expenses for multiple people
-- Edit existing expenses
-- Delete expenses
-- Calculate total expenses and cost per person
-- Display adjustments needed for each person based on their expenses
+## Características
+- Adicionar despesas com descrição, pagador e valor
+- Selecionar participantes específicos para cada despesa
+- Editar despesas existentes
+- Excluir despesas
+- Calcular despesas totais e custo por pessoa
+- Exibir ajustes necessários para cada pessoa com base em suas despesas
+- Sugerir pagamentos otimizados entre os participantes
 
-## Project Structure
+## Estrutura do Projeto
 ```
 expense-splitter
-├── index.html          # Main HTML document
+├── index.html          # Documento HTML principal
 ├── css
-│   └── style.css      # Styles for the application
+│   └── style.css      # Estilos para a aplicação
 ├── js
-│   ├── app.js         # Main JavaScript functionality
-│   ├── expense.js     # Expense class definition
-│   └── calculations.js # Calculation functions
-├── img                # Directory for images
-└── README.md          # Project documentation
+│   ├── app.js         # Funcionalidade principal em JavaScript
+│   ├── expense.js     # Definição da classe de despesas
+│   └── calculations.js # Funções de cálculo
+├── img                # Diretório para imagens
+└── README.md          # Documentação do projeto
 ```
 
-## Getting Started
-To get started with the Expense Splitter application, follow these steps:
+## Primeiros Passos
+Para começar a usar a aplicação Divisor de Despesas, siga estas etapas:
 
-1. **Clone the repository**:
+1. **Clone o repositório**:
    ```
    git clone <repository-url>
    ```
 
-2. **Open the project**:
-   Navigate to the project directory:
+2. **Abra o projeto**:
+   Navegue até o diretório do projeto:
    ```
    cd expense-splitter
    ```
 
-3. **Open `index.html`**:
-   Open `index.html` in your web browser to view the application.
+3. **Abra `index.html`**:
+   Abra o arquivo `index.html` no seu navegador para visualizar a aplicação.
 
-## Usage
-- Enter the name of the person and the amount they spent in the input fields.
-- Click the "Add Expense" button to record the expense.
-- To edit an expense, click the "Edit" button next to the expense you want to modify.
-- To delete an expense, click the "Delete" button next to the expense.
-- View the summary of expenses and adjustments at the bottom of the application.
+## Uso
+- Insira o nome da pessoa, a descrição da despesa e o valor gasto nos campos de entrada.
+- Selecione os participantes da despesa.
+- Clique no botão "Adicionar Despesa" para registrar a despesa.
+- Para editar uma despesa, clique no botão "Editar" ao lado da despesa que deseja modificar.
+- Para excluir uma despesa, clique no botão "Excluir" ao lado da despesa.
+- Visualize o resumo das despesas e ajustes na parte inferior da aplicação.
+- Utilize a sugestão de pagamentos otimizados para facilitar os acertos entre os participantes.
 
-## Contributing
-Contributions are welcome! If you have suggestions for improvements or new features, please open an issue or submit a pull request.
+## Contribuindo
+Contribuições são bem-vindas! Se você tiver sugestões de melhorias ou novos recursos, por favor, abra uma issue ou envie um pull request.
 
-## License
-This project is licensed under the MIT License. See the LICENSE file for more details.
+## Licença
+Este projeto está licenciado sob a Licença MIT. Consulte o arquivo LICENSE para mais detalhes.
