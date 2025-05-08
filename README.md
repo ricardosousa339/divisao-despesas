@@ -3,6 +3,9 @@
 ## Visão Geral
 O Divisor de Despesas é uma aplicação web simples projetada para ajudar os usuários a gerenciar e dividir despesas entre várias pessoas. Os usuários podem adicionar, editar e excluir despesas, bem como visualizar um resumo das despesas totais e quanto cada pessoa deve ou tem a receber.
 
+## Acesse a Aplicação Online
+**URL da aplicação:** [https://ricardosousa339.github.io/divisao-despesas/](https://ricardosousa339.github.io/divisao-despesas/)
+
 ## Características
 - Adicionar despesas com descrição, pagador e valor
 - Selecionar participantes específicos para cada despesa
