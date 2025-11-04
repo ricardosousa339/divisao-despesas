@@ -730,3 +730,162 @@ button {
 .close-help:hover {
     background-color: #2980b9;
 }
+
+/* ============================================
+   RESPONSIVE DESIGN FOR MOBILE DEVICES
+   ============================================ */
+
+/* Tablet and below (768px) */
+@media (max-width: 768px) {
+    body {
+        padding: 15px;
+    }
+    
+    .container {
+        padding: 20px;
+    }
+    
+    h1 {
+        font-size: 1.75em;
+    }
+}
+
+/* Mobile devices (480px and below) */
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+    
+    .container {
+        padding: 15px;
+        border-radius: 5px;
+    }
+    
+    h1 {
+        font-size: 1.5em;
+        margin-bottom: 15px;
+    }
+    
+    .section {
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+    
+    /* Improve touch targets on mobile */
+    button {
+        min-height: 44px;
+        padding: 12px 10px;
+    }
+    
+    /* Tab buttons - make scrollable horizontally */
+    .tab-button {
+        padding: 10px 15px;
+        font-size: 0.9em;
+    }
+    
+    /* Expense items - stack vertically on mobile */
+    .expense-item {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 12px;
+    }
+    
+    .expense-info {
+        width: 100%;
+    }
+    
+    .expense-item .button-group {
+        width: 100%;
+        margin-top: 10px;
+        flex-direction: column;
+        gap: 5px;
+        min-width: auto;
+    }
+    
+    .expense-item .button-group button {
+        width: 100%;
+    }
+    
+    /* People management */
+    #manage-people-list div {
+        min-width: 120px;
+        font-size: 13px;
+        padding: 6px 12px;
+    }
+    
+    /* Transaction items */
+    .transaction-item {
+        font-size: 0.9em;
+        padding: 10px;
+    }
+    
+    /* Steps guide */
+    .steps-guide-container {
+        margin-bottom: 15px;
+    }
+    
+    .steps-guide ol {
+        padding-left: 20px;
+        font-size: 0.9em;
+    }
+    
+    .steps-guide li {
+        margin-bottom: 8px;
+    }
+}
+
+/* Tab buttons scrolling */
+.tab-buttons {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    flex-wrap: nowrap;
+}
+
+.tab-button {
+    white-space: nowrap;
+    flex-shrink: 0;
+    min-width: auto;
+}
+
+/* Scrollbar styling for tab buttons */
+.tab-buttons::-webkit-scrollbar {
+    height: 4px;
+}
+
+.tab-buttons::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.tab-buttons::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 2px;
+}
+
+.tab-buttons::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Table responsiveness */
+.distribution-section {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 600px) {
+    .expenses-summary-table {
+        font-size: 0.85em;
+        table-layout: auto;
+        min-width: 500px;
+    }
+    
+    .expenses-summary-table th,
+    .expenses-summary-table td {
+        padding: 6px 4px;
+        white-space: nowrap;
+    }
+}
+
+/* Transaction items - ensure they wrap properly */
+.transaction-item {
+    flex-wrap: wrap;
+}
