@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     let expenses = [];
     let people = new Set(); // Track unique people (case sensitive)
+    let peopleNormalizedMap = new Map(); // Map normalized (lowercase) names to original capitalization
     let editMode = false;
 
     // Adicionar o event listener para o formulário de pessoas
@@ -45,15 +46,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function addPerson(name) {
-        // Verificar se já existe uma pessoa com esse nome exato (case sensitive)
-        if (!people.has(name)) {
+        const normalizedName = name.toLowerCase();
+        
+        // Verificar se já existe uma pessoa com esse nome (case insensitive)
+        if (peopleNormalizedMap.has(normalizedName)) {
+            const existingName = peopleNormalizedMap.get(normalizedName);
+            showNotification(`Pessoa "${existingName}" já existe!`, 'warning');
+        } else {
             people.add(name);
+            peopleNormalizedMap.set(normalizedName, name);
             updatePeopleList();
             updatePayerSelect();
             checkExpenseButtonState();
             showNotification(`Pessoa "${name}" adicionada com sucesso!`);
-        } else {
-            showNotification(`Pessoa "${name}" já existe!`, 'warning');
         }
     }
 
@@ -70,6 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             
             people.delete(name);
+            peopleNormalizedMap.delete(name.toLowerCase());
             updatePeopleList();
             updatePayerSelect();
             checkExpenseButtonState();
