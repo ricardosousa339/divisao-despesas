@@ -340,6 +340,7 @@ button {
     cursor: pointer;
     margin-right: 5px;
     font-weight: bold;
+    width: auto;
 }
 
 .tab-button.active {
