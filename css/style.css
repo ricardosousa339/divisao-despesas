@@ -328,6 +328,7 @@ button {
 
 .tab-buttons {
     display: flex;
+    flex-wrap: wrap;
     border-bottom: 1px solid #ddd;
 }
 
@@ -339,6 +340,7 @@ button {
     cursor: pointer;
     margin-right: 5px;
     font-weight: bold;
+    width: auto;
 }
 
 .tab-button.active {
@@ -748,6 +750,37 @@ button {
     h1 {
         font-size: 1.75em;
     }
+    
+    /* Tab buttons scrolling for mobile/tablet */
+    .tab-buttons {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        flex-wrap: nowrap;
+    }
+    
+    .tab-button {
+        white-space: nowrap;
+        flex-shrink: 0;
+        min-width: auto;
+    }
+    
+    /* Scrollbar styling for tab buttons */
+    .tab-buttons::-webkit-scrollbar {
+        height: 4px;
+    }
+    
+    .tab-buttons::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+    
+    .tab-buttons::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 2px;
+    }
+    
+    .tab-buttons::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
 }
 
 /* Mobile devices (480px and below) */
@@ -834,36 +867,7 @@ button {
     }
 }
 
-/* Tab buttons scrolling */
-.tab-buttons {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    flex-wrap: nowrap;
-}
 
-.tab-button {
-    white-space: nowrap;
-    flex-shrink: 0;
-    min-width: auto;
-}
-
-/* Scrollbar styling for tab buttons */
-.tab-buttons::-webkit-scrollbar {
-    height: 4px;
-}
-
-.tab-buttons::-webkit-scrollbar-track {
-    background: #f1f1f1;
-}
-
-.tab-buttons::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 2px;
-}
-
-.tab-buttons::-webkit-scrollbar-thumb:hover {
-    background: #555;
-}
 
 /* Table responsiveness */
 .distribution-section {
