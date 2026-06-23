@@ -210,23 +210,22 @@ const NubankImporter = {
                         <input type="checkbox" id="import-check-${index}" ${g.importChecked ? 'checked' : ''} onchange="NubankImporter.updateChecked(${index}, this.checked)">
                         <label for="import-check-${index}" style="margin: 0; cursor: pointer;">
                             <span class="import-group-title">${g.title}</span>
-                            <span class="import-group-count">(${g.items.length}x)</span>
+                            <span class="import-group-count">${g.items.length > 1 ? `(${g.items.length} transações)` : ''}</span>
                         </label>
                     </div>
                     <div class="import-group-right">
                         <span class="import-group-amount">R$ ${g.totalAmount.toFixed(2)}</span>
-                        <div class="import-group-actions">
-                            <button type="button" class="import-group-toggle" onclick="NubankImporter.toggleDetails(${index})">
-                                <span id="import-toggle-lbl-${index}">Detalhes</span>
-                            </button>
-                        </div>
+                        <button type="button" class="import-group-toggle" onclick="NubankImporter.toggleDetails(${index})">
+                            <span id="import-toggle-lbl-${index}">Detalhes</span>
+                            <i data-lucide="chevron-down" id="import-toggle-icon-${index}" class="icon-sm"></i>
+                        </button>
                     </div>
                 </div>
 
                 ${badgesHTML ? `<div class="import-badge-container">${badgesHTML}</div>` : ''}
 
                 <div class="import-group-options" style="${g.importChecked ? 'display: flex;' : 'display: none;'}">
-                    <label class="checkbox-label" style="font-size: 0.85em; margin: 0; display: inline-flex; align-items: center; gap: 4px;">
+                    <label class="checkbox-label" style="font-size: 0.82em; margin: 0; display: inline-flex; align-items: center; gap: 6px; cursor: pointer;">
                         <input type="checkbox" id="import-rec-${index}" ${g.isRecurring ? 'checked' : ''} onchange="NubankImporter.updateRecurring(${index}, this.checked)">
                         <span>Tornar Recorrente Fixa</span>
                     </label>
@@ -259,12 +258,21 @@ const NubankImporter = {
     toggleDetails(index) {
         const detailsDiv = document.getElementById(`import-details-${index}`);
         const label = document.getElementById(`import-toggle-lbl-${index}`);
+        const icon = document.getElementById(`import-toggle-icon-${index}`);
         if (detailsDiv.style.display === 'none') {
             detailsDiv.style.display = 'flex';
             label.textContent = 'Recolher';
+            if (icon) {
+                icon.setAttribute('data-lucide', 'chevron-up');
+                if (window.lucide) lucide.createIcons();
+            }
         } else {
             detailsDiv.style.display = 'none';
             label.textContent = 'Detalhes';
+            if (icon) {
+                icon.setAttribute('data-lucide', 'chevron-down');
+                if (window.lucide) lucide.createIcons();
+            }
         }
     },
 

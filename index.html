@@ -162,47 +162,63 @@
                     </form>
 
                     <!-- Seção de Importação do Nubank -->
-                    <div class="section collapsible-card" style="margin-top: 20px;">
-                        <div class="collapsible-header" onclick="NubankImporter.toggleSection()" style="cursor: pointer; display: flex; justify-content: space-between; align-items: center; padding: 10px 0;">
-                            <h3 style="margin: 0; display: flex; align-items: center; gap: 8px;">
+                    <div class="section import-dashboard-card" style="margin-top: 20px;">
+                        <div class="import-dashboard-header" onclick="NubankImporter.toggleSection()" style="cursor: pointer; display: flex; justify-content: space-between; align-items: center; padding: 10px 0;">
+                            <h3 class="import-dashboard-title" style="margin: 0; display: flex; align-items: center; gap: 8px;">
                                 <i data-lucide="upload-cloud" class="icon-md"></i> Importar Gastos do Nubank
                             </h3>
-                            <span id="import-toggle-icon" style="font-weight: bold; font-size: 1.2em;">+</span>
+                            <span id="import-toggle-icon" class="import-toggle-icon" style="font-weight: bold; font-size: 1.2em;">+</span>
                         </div>
-                        <div id="import-content" style="display: none; margin-top: 15px; border-top: 1px solid var(--border); padding-top: 15px;">
-                            <p class="help-text">Cole aqui a lista de gastos copiados da fatura do Nubank (data, título e valor separados por tabulação) ou selecione um arquivo CSV.</p>
-                            
-                            <div class="form-group" style="margin-top: 10px;">
-                                <textarea id="nubank-paste-area" placeholder="Exemplo de formato para colar:&#10;2026-02-13&#9;Uber - NuPay&#9;12.78&#10;2026-02-13&#9;Shopee *Adias - Parcela 2/12&#9;199.18" rows="6" style="width: 100%; font-family: monospace; font-size: 0.85em; padding: 8px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--surface-2); color: var(--text); resize: vertical;"></textarea>
-                            </div>
-                            
-                            <div style="display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap;">
-                                <button type="button" class="btn-primary" onclick="NubankImporter.processPaste()">Processar Texto</button>
-                                <label class="btn-secondary" style="display: inline-flex; align-items: center; gap: 6px; cursor: pointer; margin: 0;">
-                                    <i data-lucide="file-text" class="icon-sm"></i> Selecionar CSV
-                                    <input type="file" id="nubank-file-input" accept=".csv,.txt" onchange="NubankImporter.handleFile(event)" style="display: none;">
-                                </label>
-                                <button type="button" class="btn-danger" id="btn-clear-import" onclick="NubankImporter.clear()" style="display: none;">Limpar</button>
-                            </div>
-                            
-                            <!-- Container de Preview -->
-                            <div id="import-preview-container" style="margin-top: 20px; display: none;">
-                                <h4 style="margin-bottom: 10px; display: flex; align-items: center; gap: 6px;"><i data-lucide="eye" class="icon-sm"></i> Visualização dos Gastos Encontrados</h4>
-                                <p class="help-text" style="margin-bottom: 10px;">Selecione quem pagou por padrão para as despesas importadas:</p>
-                                
-                                <div class="form-group" style="margin-bottom: 15px;">
-                                    <select id="import-default-payer" style="max-width: 250px;">
-                                        <option value="">Selecione quem pagou</option>
-                                    </select>
+                        <div id="import-content" class="import-dashboard-content" style="display: none; margin-top: 15px; border-top: 1px solid var(--border); padding-top: 15px;">
+                            <div class="import-layout-grid">
+                                <!-- Painel Esquerdo: Entrada de dados -->
+                                <div class="import-input-panel">
+                                    <div class="form-group">
+                                        <label for="nubank-paste-area" class="import-label">Cole a lista de gastos da fatura:</label>
+                                        <textarea id="nubank-paste-area" placeholder="Cole aqui (formato copiado do site do Nubank)&#10;Exemplo:&#10;2026-02-13&#9;Uber - NuPay&#9;12.78&#10;2026-02-13&#9;Shopee *Adias - Parcela 2/12&#9;199.18" rows="7"></textarea>
+                                    </div>
+                                    
+                                    <div class="import-upload-divider">
+                                        <span>ou selecione um arquivo de planilha</span>
+                                    </div>
+                                    
+                                    <div class="import-file-upload-wrapper">
+                                        <label class="btn-file-select">
+                                            <i data-lucide="file-spreadsheet"></i> Procurar arquivo CSV / TXT
+                                            <input type="file" id="nubank-file-input" accept=".csv,.txt" onchange="NubankImporter.handleFile(event)" style="display: none;">
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="import-action-buttons">
+                                        <button type="button" class="btn-primary-import" onclick="NubankImporter.processPaste()">
+                                            <i data-lucide="sparkles" class="icon-sm"></i> Processar Dados
+                                        </button>
+                                        <button type="button" class="btn-danger-import" id="btn-clear-import" onclick="NubankImporter.clear()" style="display: none;">
+                                            <i data-lucide="eraser" class="icon-sm"></i> Limpar
+                                        </button>
+                                    </div>
                                 </div>
                                 
-                                <div id="import-preview-list" class="import-preview-list" style="max-height: 400px; overflow-y: auto; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px; background: var(--surface-1); display: flex; flex-direction: column; gap: 10px;">
-                                    <!-- Os itens serão gerados via JS -->
-                                </div>
-                                
-                                <div style="margin-top: 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-                                    <span id="import-summary-text" style="font-weight: 500; font-size: 0.9em; color: var(--text-muted);">0 selecionados</span>
-                                    <button type="button" class="btn-success" onclick="NubankImporter.confirmImport()">Confirmar Importação</button>
+                                <!-- Painel Direito: Preview e confirmação -->
+                                <div class="import-preview-panel" id="import-preview-container" style="display: none;">
+                                    <div class="preview-header-bar">
+                                        <h4 class="preview-panel-title"><i data-lucide="eye" class="icon-sm"></i> Gastos Detectados</h4>
+                                        <div class="preview-payer-selection">
+                                            <label for="import-default-payer"><i data-lucide="credit-card" class="icon-sm"></i> Quem pagou:</label>
+                                            <select id="import-default-payer"></select>
+                                        </div>
+                                    </div>
+                                    
+                                    <div id="import-preview-list" class="import-preview-scroll-area">
+                                        <!-- Os cartões de transações serão injetados via JS -->
+                                    </div>
+                                    
+                                    <div class="preview-footer-bar">
+                                        <span id="import-summary-text" class="import-summary-text">0 selecionados</span>
+                                        <button type="button" class="btn-success-import" onclick="NubankImporter.confirmImport()">
+                                            <i data-lucide="check-circle" class="icon-sm"></i> Confirmar Importação
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
