@@ -3,13 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Divisor de Despesas — Divida contas entre amigos, família ou colegas de forma justa e organizada.">
     <title>Divisor de Despesas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
     <div class="container">
-        <h1>Divisor de Despesas</h1>
+        <h1><i data-lucide="wallet" class="title-icon"></i> Divisor de Despesas</h1>
         
+        <!-- Banner de aviso do dia de acerto -->
+        <div id="settlement-banner" class="settlement-banner" style="display: none;">
+            <span class="settlement-banner-icon"><i data-lucide="calendar"></i></span>
+            <span id="settlement-banner-text"></span>
+            <button class="settlement-banner-close" onclick="dismissSettlementBanner()">×</button>
+        </div>
+
         <div class="steps-guide-container">
             <div class="steps-guide-header" onclick="toggleStepsGuide()">
                 <h3>Como usar <span class="toggle-icon">+</span></h3>
@@ -27,13 +39,17 @@
 
         <div class="tab-container">
             <div class="tab-buttons">
-                <button class="tab-button active" onclick="switchTab('manage-people')">Gerenciar Pessoas</button>
-                <button class="tab-button" onclick="switchTab('add-expense')">Adicionar Despesa</button>
-                <button class="tab-button" onclick="switchTab('view-expenses')">Ver Despesas</button>
-                <button class="tab-button" onclick="switchTab('summary-tab')">Resumo</button>
+                <button class="tab-button active" onclick="switchTab('manage-people')"><i data-lucide="users"></i> Pessoas</button>
+                <button class="tab-button" onclick="switchTab('add-expense')"><i data-lucide="plus-circle"></i> Despesa</button>
+                <button class="tab-button" onclick="switchTab('view-expenses')"><i data-lucide="list"></i> Despesas</button>
+                <button class="tab-button" onclick="switchTab('summary-tab')"><i data-lucide="pie-chart"></i> Resumo</button>
+                <button class="tab-button" onclick="switchTab('history-tab')"><i data-lucide="archive"></i> Histórico</button>
+                <button class="tab-button" onclick="switchTab('settings-tab')"><i data-lucide="settings"></i> Config</button>
+                <button class="tab-button" onclick="switchTab('quick-split-tab')"><i data-lucide="beer"></i> Racha Rápido</button>
             </div>
             
             <div class="tab-content">
+                <!-- ===== ABA GERENCIAR PESSOAS ===== -->
                 <div id="manage-people" class="tab-pane active">
                     <div class="section">
                         <h2>Gerenciar Pessoas</h2>
@@ -42,18 +58,25 @@
                                 <label for="person-name">Nome da Pessoa:</label>
                                 <input type="text" id="person-name" placeholder="Digite o nome da pessoa" required>
                             </div>
+                            <div class="form-group checkbox-inline">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="person-permanent">
+                                    <span><i data-lucide="pin" class="icon-sm"></i> Pessoa permanente</span>
+                                </label>
+                                <small class="help-text">Pessoas permanentes são incluídas automaticamente em toda nova despesa.</small>
+                            </div>
                             <button type="submit" class="btn-primary" id="add-person-button">Adicionar Pessoa</button>
                         </form>
                         <div class="manage-people-list">
                             <h3>Pessoas Cadastradas</h3>
                             <div id="manage-people-list">
-                                <!-- List of people will appear here -->
                                 <p class="no-participants-message">Nenhuma pessoa adicionada ainda.</p>
                             </div>
                         </div>
                     </div>
                 </div>
                 
+                <!-- ===== ABA ADICIONAR DESPESA ===== -->
                 <div id="add-expense" class="tab-pane">
                     <form id="expense-form" class="section">
                         <div class="form-group">
@@ -65,7 +88,6 @@
                             <label for="payer">Quem pagou:</label>
                             <select id="payer" required>
                                 <option value="">Selecione quem pagou</option>
-                                <!-- Opções serão preenchidas dinamicamente -->
                             </select>
                         </div>
                         
@@ -73,42 +95,208 @@
                             <label for="amount">Valor gasto:</label>
                             <input type="number" id="amount" placeholder="0.00" step="0.01" required>
                         </div>
+
+                        <div class="form-group">
+                            <label for="expense-date">Data (opcional):</label>
+                            <input type="date" id="expense-date">
+                        </div>
                         
+                        <!-- Seção de recorrência -->
+                        <div class="recurring-section">
+                            <div class="form-group checkbox-inline">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="expense-recurring" onchange="toggleRecurringOptions()">
+                                    <span><i data-lucide="repeat" class="icon-sm"></i> Despesa recorrente</span>
+                                </label>
+                            </div>
+                            <div id="recurring-options" class="recurring-options" style="display: none;">
+                                <div class="form-group checkbox-inline">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="expense-fixed-value" checked>
+                                        <span>Valor fixo</span>
+                                    </label>
+                                    <small class="help-text">Desmarcado = valor varia a cada período (ex: conta de luz)</small>
+                                </div>
+                                <div class="form-group">
+                                    <label for="expense-frequency">Frequência:</label>
+                                    <select id="expense-frequency">
+                                        <option value="mensal">Mensal</option>
+                                        <option value="quinzenal">Quinzenal</option>
+                                        <option value="semanal">Semanal</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
                         <input type="hidden" id="expense-id">
                         
                         <div id="participants-section">
                             <h3>Quem vai participar desta despesa?</h3>
                             <p class="help-text">Se nenhuma pessoa for selecionada, todos serão participantes dela.</p>
                             <div id="participants-list" class="checkbox-group">
-                                <!-- Participants checkboxes will be added here dynamically -->
                                 <p id="no-participants-message" class="no-participants-message">Adicione uma despesa primeiro para ver as pessoas disponíveis.</p>
                             </div>
+                        </div>
+
+                        <!-- Alerta de valor pendente para recorrentes variáveis -->
+                        <div id="pending-value-alert" class="pending-value-alert" style="display: none;">
+                            <i data-lucide="alert-triangle" class="icon-sm"></i> Esta despesa recorrente foi gerada automaticamente. Preencha o valor.
                         </div>
                         
                         <button type="submit" class="btn-primary" id="submit-button">Adicionar Despesa</button>
                     </form>
                 </div>
                 
+                <!-- ===== ABA VER DESPESAS ===== -->
                 <div id="view-expenses" class="tab-pane">
                     <div class="section">
                         <h2>Lista de Despesas</h2>
+                        <div id="pending-expenses-section" style="display: none;">
+                            <h3 class="pending-header"><i data-lucide="alert-triangle"></i> Aguardando valor</h3>
+                            <ul id="pending-expense-list" class="expense-list"></ul>
+                        </div>
                         <ul id="expense-list" class="expense-list">
-                            <!-- Expenses will be listed here -->
                             <li class="no-participants-message">Nenhuma despesa adicionada ainda.</li>
                         </ul>
                     </div>
                 </div>
                 
+                <!-- ===== ABA RESUMO ===== -->
                 <div id="summary-tab" class="tab-pane">
                     <div id="summary" class="summary">
                         <h2>Resumo das Despesas</h2>
-                        <p id="total-display">Total: R$ 0.00</p>
-                        <div id="expense-distribution">
-                            <!-- Aqui será mostrada a distribuição de valores por pessoa -->
+                        <div id="cycle-info" style="display: none;">
+                            <!-- Info do período atual -->
                         </div>
-                        <h3>Ajustes necessários:</h3>
-                        <div id="adjustments">
+                        <p id="total-display">Total: R$ 0,00</p>
+                        <div id="person-cards-container">
+                            <!-- Cards por pessoa aparecerão aqui -->
+                        </div>
+                        <div id="suggested-payments">
                             <p class="no-participants-message">Adicione despesas para ver os ajustes necessários.</p>
+                        </div>
+                        <div id="close-cycle-section" style="display: none;">
+                            <button class="btn-close-cycle" onclick="closeCycle()">
+                                <i data-lucide="check-circle"></i> Fechar Período
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- ===== ABA HISTÓRICO ===== -->
+                <div id="history-tab" class="tab-pane">
+                    <div class="section">
+                        <h2 class="title-with-icon"><i data-lucide="archive"></i> Histórico de Períodos</h2>
+                        <div id="history-list">
+                            <p class="no-participants-message">Nenhum período fechado ainda.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- ===== ABA CONFIGURAÇÕES ===== -->
+                <div id="settings-tab" class="tab-pane">
+                    <div class="section">
+                        <h2 class="title-with-icon"><i data-lucide="settings"></i> Configurações</h2>
+                        
+                        <div class="settings-group">
+                            <h3>Ciclo de Acerto</h3>
+                            <p class="help-text">Defina um dia do mês para consolidar e fechar as despesas. Deixe vazio para modo livre (sem ciclos).</p>
+                            <div class="form-group">
+                                <label for="settlement-day">Dia de acerto (1-31):</label>
+                                <input type="number" id="settlement-day" min="1" max="31" placeholder="Ex: 5">
+                            </div>
+                            <button class="btn-primary" onclick="saveSettlementDay()">Salvar Dia de Acerto</button>
+                        </div>
+
+                        <div class="settings-group">
+                            <h3>Dados</h3>
+                            <div class="settings-buttons">
+                                <button class="btn-export" onclick="exportAllData()">
+                                    <i data-lucide="download"></i> Exportar Dados (JSON)
+                                </button>
+                                <button class="btn-import" onclick="importAllData()">
+                                    <i data-lucide="upload"></i> Importar Dados (JSON)
+                                </button>
+                                <button class="btn-danger" onclick="clearAllData()">
+                                    <i data-lucide="trash-2"></i> Limpar Tudo
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ===== ABA RACHA RÁPIDO ===== -->
+                <div id="quick-split-tab" class="tab-pane">
+                    <div class="section">
+                        <div class="quick-split-header">
+                            <h2 class="title-with-icon"><i data-lucide="beer"></i> Racha Rápido (Mesa de Bar)</h2>
+                            <button class="btn-danger btn-sm" onclick="QuickSplitManager.clearAll()"><i data-lucide="trash-2"></i> Limpar Mesa</button>
+                        </div>
+                        <p class="help-text">Uma calculadora temporária isolada do histórico principal. Perfeita para dividir o bar.</p>
+                        
+                        <div class="quick-split-grid">
+                            <!-- Coluna: Pessoas e Consumos -->
+                            <div class="quick-split-col">
+                                <div class="settings-group">
+                                    <h3>1. Pessoas na Mesa</h3>
+                                    <form id="qs-person-form" style="display: flex; gap: 8px;">
+                                        <input type="text" id="qs-person-name" placeholder="Nome" required style="flex: 1;">
+                                        <button type="submit" class="btn-primary" style="width: auto;"><i data-lucide="user-plus"></i></button>
+                                    </form>
+                                    <div id="qs-people-list" class="manage-people-list" style="margin-top: 10px; display: flex; flex-wrap: wrap; gap: 6px;">
+                                        <p class="no-participants-message" style="padding: 10px; width: 100%;">Nenhuma pessoa adicionada.</p>
+                                    </div>
+                                </div>
+
+                                <div class="settings-group">
+                                    <h3>2. Adicionar Consumo</h3>
+                                    <form id="qs-expense-form">
+                                        <div class="form-group">
+                                            <input type="text" id="qs-description" placeholder="Ex: Porção de fritas" required>
+                                        </div>
+                                        <div class="form-group" style="display: flex; gap: 8px;">
+                                            <input type="number" id="qs-amount" placeholder="R$ 0.00" step="0.01" required style="flex: 1;">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="help-text">Quem consumiu?</label>
+                                            <div id="qs-participants-list" class="checkbox-group">
+                                                <p class="help-text">Adicione pessoas primeiro.</p>
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn-primary"><i data-lucide="plus"></i> Adicionar Item</button>
+                                    </form>
+                                </div>
+                            </div>
+                            
+                            <!-- Coluna: Resumo -->
+                            <div class="quick-split-col">
+                                <div class="settings-group quick-split-summary-box">
+                                    <h3>3. Resumo da Mesa</h3>
+                                    <ul id="qs-expense-list" class="expense-list" style="margin-bottom: 16px;">
+                                        <li class="no-participants-message">Nenhum consumo.</li>
+                                    </ul>
+                                    <div class="qs-totals">
+                                        <div class="qs-total-row">
+                                            <span>Subtotal:</span>
+                                            <span id="qs-subtotal">R$ 0.00</span>
+                                        </div>
+                                        <div class="qs-total-row" style="margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid var(--border);">
+                                            <span style="display: flex; align-items: center; gap: 8px;">
+                                                Taxa (10%):
+                                                <input type="checkbox" id="qs-apply-tax" checked onchange="QuickSplitManager.renderSummary()" style="width:16px; height:16px;">
+                                            </span>
+                                            <span id="qs-tax-amount">R$ 0.00</span>
+                                        </div>
+                                        <div class="qs-total-row qs-grand-total">
+                                            <span>Total:</span>
+                                            <span id="qs-grand-total">R$ 0.00</span>
+                                        </div>
+                                    </div>
+                                    <div id="qs-person-totals" style="margin-top: 16px;">
+                                        <!-- Cada pessoa e o quanto deve pagar -->
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -116,29 +304,17 @@
         </div>
     </div>
     
+    <script src="js/storage.js"></script>
     <script src="js/expense.js"></script>
     <script src="js/calculations.js"></script>
-    <script src="js/app.js"></script>
+    <script src="js/app-core.js"></script>
+    <script src="js/app-expenses.js"></script>
+    <script src="js/app-summary.js"></script>
+    <script src="js/app-quick-split.js"></script>
     
     <script>
-        function switchTab(tabId) {
-            // Hide all tabs
-            document.querySelectorAll('.tab-pane').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            // Deactivate all tab buttons
-            document.querySelectorAll('.tab-button').forEach(button => {
-                button.classList.remove('active');
-            });
-            
-            // Show the selected tab
-            document.getElementById(tabId).classList.add('active');
-            
-            // Activate the clicked button
-            event.target.classList.add('active');
-        }
-        
+        // Inicializar ícones do Lucide
+        lucide.createIcons();
         // Função para alternar a visibilidade da seção "Como usar"
         function toggleStepsGuide() {
             const guide = document.getElementById('steps-guide');
@@ -151,6 +327,12 @@
                 guide.style.display = 'none';
                 icon.textContent = '+';
             }
+        }
+
+        function toggleRecurringOptions() {
+            const checkbox = document.getElementById('expense-recurring');
+            const options = document.getElementById('recurring-options');
+            options.style.display = checkbox.checked ? 'block' : 'none';
         }
         
         // Inicializa a seção "Como usar" como recolhida
