@@ -70,14 +70,13 @@ const SummaryManager = {
             const paidPct = (p.paid / maxVal) * 100;
             const owedPct = (p.owed / maxVal) * 100;
 
-            // Detalhes por despesa
             const personExpDetails = validExpenses.filter(e =>
                 e.participants.includes(p.name) || e.payer === p.name
             ).map(e => {
                 const share = e.participants.includes(p.name) ? e.amount / e.participants.length : 0;
                 const didPay = e.payer === p.name;
                 return `<div class="detail-row">
-                    <span class="detail-desc">${e.description}</span>
+                    <span class="detail-desc" title="${e.description.replace(/"/g, '&quot;')}">${e.description}</span>
                     <span class="detail-share">Parte: R$ ${share.toFixed(2)}</span>
                     <span class="detail-paid ${didPay ? 'yes' : 'no'}">${didPay ? 'Pagou R$ ' + e.amount.toFixed(2) : '—'}</span>
                 </div>`;

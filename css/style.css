@@ -143,35 +143,28 @@ h1 {
 .steps-guide li { margin-bottom: 6px; }
 
 /* ============================================
-   TABS
+   TABS — Desktop
    ============================================ */
 .tab-container { margin-bottom: 20px; }
 .tab-buttons {
     display: flex;
-    gap: 4px;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+    gap: 2px;
     padding-bottom: 4px;
     border-bottom: 1px solid var(--border);
-    scrollbar-width: none; /* Hide scrollbar for Firefox */
-}
-.tab-buttons::-webkit-scrollbar {
-    display: none; /* Hide scrollbar for Chrome/Safari */
 }
 .tab-button {
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 10px 14px;
+    gap: 4px;
+    padding: 8px 10px;
     background: transparent;
     border: none;
     border-radius: var(--radius-sm) var(--radius-sm) 0 0;
     cursor: pointer;
     font-weight: 600;
-    font-size: 0.85em;
+    font-size: 0.82em;
     color: var(--text-muted);
     white-space: nowrap;
-    flex-shrink: 0;
     transition: all var(--transition);
     width: auto;
 }
@@ -181,6 +174,127 @@ h1 {
 .tab-content { padding: 20px 0; }
 .tab-pane { display: none; }
 .tab-pane.active { display: block; }
+
+/* ============================================
+   BOTTOM NAV — Mobile only
+   ============================================ */
+.bottom-nav,
+.bottom-nav-more-panel,
+.bottom-nav-backdrop {
+    display: none; /* hidden on desktop */
+}
+
+@media (max-width: 600px) {
+    /* Hide the horizontal tab bar on mobile */
+    .tab-buttons { display: none; }
+    .tab-content { padding: 8px 0 0; }
+
+    /* Push container content above the bottom nav */
+    .container { padding-bottom: 84px; }
+
+    /* Fixed bottom navigation */
+    .bottom-nav {
+        display: flex;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 64px;
+        background: var(--surface);
+        border-top: 1px solid var(--border);
+        z-index: 100;
+        box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
+    }
+    .bottom-nav-btn {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+        background: transparent;
+        border: none;
+        color: var(--text-muted);
+        font-size: 0.62em;
+        font-weight: 600;
+        font-family: inherit;
+        cursor: pointer;
+        transition: color var(--transition);
+        padding: 0;
+        width: auto;
+        position: relative;
+    }
+    .bottom-nav-btn svg {
+        width: 22px;
+        height: 22px;
+        stroke-width: 1.75;
+    }
+    .bottom-nav-btn.active { color: var(--primary); }
+    .bottom-nav-btn.active::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 20%;
+        right: 20%;
+        height: 2px;
+        background: var(--primary);
+        border-radius: 0 0 4px 4px;
+    }
+    .bottom-nav-btn[disabled] { opacity: 0.35; pointer-events: none; }
+    /* "More" flyout panel */
+    .bottom-nav-more-panel {
+        position: fixed;
+        bottom: 64px;
+        right: 0;
+        left: 0;
+        background: var(--surface);
+        border-top: 1px solid var(--border);
+        border-radius: var(--radius) var(--radius) 0 0;
+        padding: 12px 8px;
+        z-index: 99;
+        display: none;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 4px;
+        box-shadow: 0 -8px 24px rgba(0,0,0,0.2);
+    }
+    .bottom-nav-more-panel.open { display: grid; }
+    .bottom-nav-more-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        padding: 10px 4px;
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        color: var(--text-muted);
+        font-size: 0.7em;
+        font-weight: 600;
+        font-family: inherit;
+        cursor: pointer;
+        transition: all var(--transition);
+        width: auto;
+    }
+    .bottom-nav-more-item svg { width: 20px; height: 20px; }
+    .bottom-nav-more-item.active {
+        color: var(--primary);
+        background: rgba(59,130,246,0.08);
+        border-color: rgba(59,130,246,0.3);
+    }
+    .bottom-nav-more-item:hover {
+        color: var(--primary);
+        border-color: var(--primary);
+    }
+    /* Dimmed backdrop behind the flyout */
+    .bottom-nav-backdrop {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.35);
+        z-index: 98;
+    }
+    .bottom-nav-backdrop.open { display: block; }
+}
 
 /* ============================================
    FORMS
@@ -321,6 +435,13 @@ button {
 .expense-date { color: var(--text-muted); font-size: 0.82em; display: block; }
 .expense-item small { display: block; color: var(--text-muted); font-size: 0.82em; margin-top: 2px; }
 .button-group { display: flex; gap: 6px; flex-shrink: 0; margin-left: 12px; }
+@media (min-width: 601px) {
+    #expense-list .button-group,
+    #pending-expense-list .button-group {
+        width: 180px;
+        justify-content: flex-end;
+    }
+}
 
 /* Badges */
 .badges { display: flex; gap: 6px; margin-top: 6px; flex-wrap: wrap; }
@@ -442,18 +563,28 @@ button {
 .card-details summary:hover { color: var(--primary); }
 .details-content { padding: 0 16px 12px; }
 .detail-row {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 1.6fr 1.1fr 1.3fr;
     align-items: center;
     padding: 6px 0;
     border-bottom: 1px solid var(--border);
     font-size: 0.85em;
-    flex-wrap: wrap;
-    gap: 4px;
+    gap: 8px;
 }
 .detail-row:last-child { border-bottom: none; }
-.detail-desc { font-weight: 500; flex: 1; min-width: 100px; }
-.detail-share { color: var(--text-muted); }
+.detail-desc {
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.detail-share {
+    color: var(--text-muted);
+    text-align: right;
+}
+.detail-paid {
+    text-align: right;
+}
 .detail-paid.yes { color: var(--green); font-weight: 600; }
 .detail-paid.no { color: var(--text-muted); }
 
@@ -634,10 +765,10 @@ button {
 
 @media (max-width: 600px) {
     body { padding: 8px; }
-    .container { padding: 14px; border-radius: var(--radius-sm); }
+    /* container padding-bottom is handled by bottom-nav block above */
+    .container { padding-top: 14px; padding-left: 14px; padding-right: 14px; border-radius: var(--radius-sm); }
     .theme-toggle-btn { top: 14px; right: 14px; }
     h1 { font-size: 1.4em; margin-bottom: 16px; }
-    .tab-button { padding: 8px 10px; font-size: 0.78em; }
     .expense-item { flex-direction: column; align-items: flex-start; }
     .button-group { width: 100%; margin-left: 0; margin-top: 10px; }
     .button-group button { flex: 1; }

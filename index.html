@@ -60,7 +60,7 @@
                 <button class="tab-button" onclick="switchTab('summary-tab')"><i data-lucide="pie-chart"></i> Resumo</button>
                 <button class="tab-button" onclick="switchTab('history-tab')"><i data-lucide="archive"></i> Histórico</button>
                 <button class="tab-button" onclick="switchTab('settings-tab')"><i data-lucide="settings"></i> Config</button>
-                <button class="tab-button" onclick="switchTab('quick-split-tab')"><i data-lucide="zap"></i> Racha Rápido</button>
+                <button class="tab-button" onclick="switchTab('quick-split-tab')"><i data-lucide="zap"></i> Racha</button>
             </div>
             
             <div class="tab-content">
@@ -244,7 +244,7 @@
                 <div id="quick-split-tab" class="tab-pane">
                     <div class="section">
                         <div class="quick-split-header">
-                            <h2 class="title-with-icon"><i data-lucide="zap"></i> Racha Rápido (Mesa de Bar)</h2>
+                            <h2 class="title-with-icon"><i data-lucide="zap"></i> Racha Rápido</h2>
                             <button class="btn-danger btn-sm" onclick="QuickSplitManager.clearAll()"><i data-lucide="trash-2"></i> Limpar Mesa</button>
                         </div>
                         
@@ -317,6 +317,47 @@
             </div>
         </div>
     </div>
+
+    <!-- ===== BOTTOM NAV (mobile only) ===== -->
+    <nav class="bottom-nav" id="bottom-nav" role="navigation" aria-label="Navegação principal">
+        <button class="bottom-nav-btn active" id="bnav-manage-people" onclick="BottomNav.go('manage-people', this)" title="Pessoas">
+            <i data-lucide="users"></i>
+            <span>Pessoas</span>
+        </button>
+        <button class="bottom-nav-btn" id="bnav-add-expense" onclick="BottomNav.go('add-expense', this)" title="Despesa">
+            <i data-lucide="plus-circle"></i>
+            <span>Despesa</span>
+        </button>
+        <button class="bottom-nav-btn" id="bnav-summary-tab" onclick="BottomNav.go('summary-tab', this)" title="Resumo">
+            <i data-lucide="pie-chart"></i>
+            <span>Resumo</span>
+        </button>
+        <button class="bottom-nav-btn" id="bnav-view-expenses" onclick="BottomNav.go('view-expenses', this)" title="Despesas">
+            <i data-lucide="list"></i>
+            <span>Despesas</span>
+        </button>
+        <button class="bottom-nav-btn" id="bnav-more" onclick="BottomNav.toggleMore()" title="Mais">
+            <i data-lucide="more-horizontal"></i>
+            <span>Mais</span>
+        </button>
+    </nav>
+
+    <!-- Flyout panel for secondary tabs -->
+    <div class="bottom-nav-more-panel" id="bnav-more-panel">
+        <button class="bottom-nav-more-item" id="bnav-history-tab" onclick="BottomNav.go('history-tab', this, true)">
+            <i data-lucide="archive"></i>
+            <span>Histórico</span>
+        </button>
+        <button class="bottom-nav-more-item" id="bnav-settings-tab" onclick="BottomNav.go('settings-tab', this, true)">
+            <i data-lucide="settings"></i>
+            <span>Config</span>
+        </button>
+        <button class="bottom-nav-more-item" id="bnav-quick-split-tab" onclick="BottomNav.go('quick-split-tab', this, true)">
+            <i data-lucide="zap"></i>
+            <span>Racha</span>
+        </button>
+    </div>
+    <div class="bottom-nav-backdrop" id="bnav-backdrop" onclick="BottomNav.closeMore()"></div>
     
     <script src="js/storage.js"></script>
     <script src="js/expense.js"></script>
@@ -352,6 +393,67 @@
         // Inicializa a seção "Como usar" como recolhida
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('steps-guide').style.display = 'none';
+        });
+
+        // ===== BOTTOM NAV CONTROLLER =====
+        const BottomNav = {
+            // Map tab IDs to bottom-nav button IDs
+            tabToBtn: {
+                'manage-people':  'bnav-manage-people',
+                'add-expense':    'bnav-add-expense',
+                'view-expenses':  'bnav-view-expenses',
+                'summary-tab':    'bnav-summary-tab',
+                'history-tab':    'bnav-history-tab',
+                'settings-tab':   'bnav-settings-tab',
+                'quick-split-tab':'bnav-quick-split-tab',
+            },
+            secondaryTabs: new Set(['history-tab','settings-tab','quick-split-tab']),
+
+            go(tabId, btn, fromMore = false) {
+                switchTab(tabId);
+                // Deactivate all primary buttons
+                document.querySelectorAll('.bottom-nav-btn').forEach(b => b.classList.remove('active'));
+                // Deactivate all secondary items
+                document.querySelectorAll('.bottom-nav-more-item').forEach(b => b.classList.remove('active'));
+
+                if (fromMore || this.secondaryTabs.has(tabId)) {
+                    // Highlight the "More" button as active
+                    document.getElementById('bnav-more').classList.add('active');
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.add('active');
+                }
+                if (fromMore) this.closeMore();
+            },
+
+            toggleMore() {
+                const panel = document.getElementById('bnav-more-panel');
+                const backdrop = document.getElementById('bnav-backdrop');
+                const isOpen = panel.classList.contains('open');
+                panel.classList.toggle('open', !isOpen);
+                backdrop.classList.toggle('open', !isOpen);
+            },
+
+            closeMore() {
+                document.getElementById('bnav-more-panel').classList.remove('open');
+                document.getElementById('bnav-backdrop').classList.remove('open');
+            },
+
+            // Call after App state changes to sync disabled state
+            syncDisabled(hasNoPeople) {
+                const btn = document.getElementById('bnav-add-expense');
+                if (btn) btn.disabled = hasNoPeople;
+            }
+        };
+
+        // Patch App.checkExpenseButtonState to also sync BottomNav
+        document.addEventListener('DOMContentLoaded', function() {
+            const _orig = App.checkExpenseButtonState.bind(App);
+            App.checkExpenseButtonState = function() {
+                _orig();
+                BottomNav.syncDisabled(App.people.length === 0);
+            };
+            BottomNav.syncDisabled(App.people.length === 0);
         });
     </script>
 </body>
