@@ -25,6 +25,25 @@
     --transition: 0.2s ease;
 }
 
+[data-theme="light"] {
+    --bg: #f8fafc;
+    --surface: #ffffff;
+    --surface-2: #f1f5f9;
+    --surface-3: #e2e8f0;
+    --border: #e2e8f0;
+    --text: #0f172a;
+    --text-muted: #64748b;
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+    --green: #059669;
+    --green-bg: rgba(5, 150, 105, 0.08);
+    --red: #dc2626;
+    --red-bg: rgba(220, 38, 38, 0.08);
+    --yellow: #d97706;
+    --yellow-bg: rgba(217, 119, 6, 0.08);
+    --shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(15, 23, 42, 0.03);
+}
+
 body {
     font-family: 'Inter', -apple-system, sans-serif;
     background: var(--bg);
@@ -53,6 +72,7 @@ h1 {
 .title-with-icon { display: flex; align-items: center; gap: 8px; }
 
 .container {
+    position: relative;
     max-width: 800px;
     margin: auto;
     background: var(--surface);
@@ -552,9 +572,33 @@ button {
 /* ============================================
    RESPONSIVE
    ============================================ */
+.theme-toggle-btn {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--transition);
+    padding: 0;
+}
+.theme-toggle-btn:hover {
+    background: var(--surface-3);
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
 @media (max-width: 600px) {
     body { padding: 8px; }
     .container { padding: 14px; border-radius: var(--radius-sm); }
+    .theme-toggle-btn { top: 14px; right: 14px; }
     h1 { font-size: 1.4em; margin-bottom: 16px; }
     .tab-button { padding: 8px 10px; font-size: 0.78em; }
     .expense-item { flex-direction: column; align-items: flex-start; }

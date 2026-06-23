@@ -20,6 +20,7 @@ const App = {
         if (this.settings.settlementDay) {
             document.getElementById('settlement-day').value = this.settings.settlementDay;
         }
+        ThemeManager.init();
     },
 
     save() {
@@ -276,3 +277,41 @@ function showNotification(message, type = 'success') {
         setTimeout(() => document.body.removeChild(n), 300);
     }, 3000);
 }
+
+// === THEME MANAGER ===
+const ThemeManager = {
+    init() {
+        // Observar mudanças do sistema se o usuário não escolheu um tema manual
+        window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', e => {
+            if (!localStorage.getItem('theme')) {
+                document.documentElement.setAttribute('data-theme', e.matches ? 'light' : 'dark');
+                this.updateToggleButton();
+            }
+        });
+        this.updateToggleButton();
+    },
+    
+    toggle() {
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        this.updateToggleButton();
+        showNotification(`Tema ${newTheme === 'dark' ? 'escuro' : 'claro'} ativado!`);
+    },
+    
+    updateToggleButton() {
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+        const btn = document.getElementById('theme-toggle-btn');
+        if (!btn) return;
+        
+        if (currentTheme === 'light') {
+            btn.innerHTML = '<i data-lucide="moon" class="icon-sm"></i>';
+            btn.title = "Mudar para tema escuro";
+        } else {
+            btn.innerHTML = '<i data-lucide="sun" class="icon-sm"></i>';
+            btn.title = "Mudar para tema claro";
+        }
+        if (window.lucide) lucide.createIcons();
+    }
+};
