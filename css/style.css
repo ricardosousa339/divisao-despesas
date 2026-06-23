@@ -204,7 +204,44 @@ input:focus, select:focus { border-color: var(--primary); outline: none; box-sha
 
 .checkbox-inline { display: flex; flex-direction: column; gap: 4px; }
 .checkbox-label { display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 500; }
-.checkbox-label input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--primary); }
+.checkbox-label span { display: inline-flex; align-items: center; gap: 6px; }
+
+input[type="checkbox"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--border);
+    border-radius: 4px;
+    background: var(--surface-3);
+    cursor: pointer;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition);
+    outline: none;
+    flex-shrink: 0;
+}
+input[type="checkbox"]:checked {
+    background: var(--primary);
+    border-color: var(--primary);
+}
+input[type="checkbox"]:checked::after {
+    content: '';
+    position: absolute;
+    width: 4px;
+    height: 8px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+    top: 2px;
+}
+input[type="checkbox"]:focus-visible {
+    box-shadow: 0 0 0 3px rgba(108,140,255,0.15);
+    border-color: var(--primary);
+}
+
 .help-text { color: var(--text-muted); font-size: 0.82em; margin-top: 2px; }
 
 /* ============================================
