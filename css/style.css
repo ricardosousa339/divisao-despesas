@@ -763,6 +763,145 @@ button {
     color: var(--primary);
 }
 
+/* ============================================
+   NUBANK IMPORT SYSTEM
+   ============================================ */
+.collapsible-card {
+    border: 1px solid var(--border);
+    background: var(--surface-3);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    margin-bottom: 20px;
+    transition: border-color var(--transition);
+}
+.collapsible-card:hover {
+    border-color: var(--primary);
+}
+.collapsible-header {
+    user-select: none;
+}
+.collapsible-header h3 {
+    font-size: 1.1em;
+    color: var(--text);
+}
+.import-preview-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+.import-group-card {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: all var(--transition);
+}
+.import-group-card.has-warning {
+    border-left: 3px solid var(--yellow);
+}
+.import-group-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+.import-group-title-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.import-group-title {
+    font-weight: 600;
+    color: var(--text);
+    font-size: 0.95em;
+}
+.import-group-count {
+    color: var(--text-muted);
+    font-size: 0.8em;
+}
+.import-group-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.import-group-amount {
+    font-weight: 700;
+    color: var(--text);
+    font-size: 1em;
+}
+.import-group-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.import-group-toggle {
+    background: none;
+    border: none;
+    color: var(--primary);
+    cursor: pointer;
+    font-size: 0.8em;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: background var(--transition);
+}
+.import-group-toggle:hover {
+    background: rgba(108, 140, 255, 0.1);
+}
+.import-group-details {
+    border-top: 1px dashed var(--border);
+    padding-top: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 0.85em;
+    color: var(--text-muted);
+}
+.import-detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2px 0;
+}
+.import-badge-container {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+}
+.import-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 6px;
+    font-size: 0.72em;
+    font-weight: 600;
+    border-radius: 4px;
+}
+.import-badge-recurring {
+    background: rgba(108, 140, 255, 0.12);
+    color: var(--primary);
+}
+.import-badge-warning {
+    background: var(--yellow-bg);
+    color: var(--yellow);
+}
+.import-group-options {
+    display: flex;
+    gap: 12px;
+    margin-top: 6px;
+    flex-wrap: wrap;
+    background: var(--surface-3);
+    padding: 6px 10px;
+    border-radius: var(--radius-sm);
+}
+
 @media (max-width: 600px) {
     body { padding: 8px; }
     /* container padding-bottom is handled by bottom-nav block above */

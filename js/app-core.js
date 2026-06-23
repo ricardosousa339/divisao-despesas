@@ -14,6 +14,13 @@ const App = {
             this.archivedCycles = saved.archivedCycles || [];
             this.settings = saved.settings || { settlementDay: null };
         }
+
+        // Add default user "Eu" if no people are registered
+        if (this.people.length === 0) {
+            this.people.push({ name: 'Eu', isPermanent: true });
+            this.save();
+        }
+
         this.bindForms();
         this.refreshAll();
         this.checkSettlementBanner();
