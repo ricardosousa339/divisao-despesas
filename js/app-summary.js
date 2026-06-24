@@ -246,16 +246,22 @@ function closeCycle() {
 
     App.archivedCycles.push(cycle);
 
-    // Regenerar recorrentes
+    // Regenerar recorrentes (excluindo parcelas — parcelas não são recorrentes)
     const recurring = App.expenses.filter(e => e.isRecurring);
     App.expenses = [];
-    recurring.forEach(e => {
+    const regenBaseId = Date.now();
+    recurring.forEach((e, idx) => {
+        // Remover metadados de parcela da cópia regenerada
+        const { installmentGroup, installmentCurrent, installmentTotal, ...cleanExpense } = e;
+        // Atualizar participantes para refletir o estado atual de App.people
+        const updatedParticipants = (e.participants || []).filter(name => App.people.some(p => p.name === name));
         App.expenses.push({
-            ...e,
-            id: Date.now() + Math.random() * 1000,
+            ...cleanExpense,
+            id: regenBaseId + idx,
             date: today,
             isPending: !e.isFixedValue,
             amount: e.isFixedValue ? e.amount : 0,
+            participants: updatedParticipants.length > 0 ? updatedParticipants : App.people.map(p => p.name),
             regeneratedFromCycleId: cycle.id
         });
     });

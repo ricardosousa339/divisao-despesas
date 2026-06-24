@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=2">
     <script src="https://unpkg.com/lucide@latest"></script>
     <script>
         // Aplicar o tema imediatamente antes de renderizar para evitar FOUC
@@ -201,11 +201,19 @@
                                 
                                 <!-- Painel Direito: Preview e confirmação -->
                                 <div class="import-preview-panel" id="import-preview-container" style="display: none;">
-                                    <div class="preview-header-bar">
+                                    <div class="preview-header-bar" style="border-bottom: none; padding-bottom: 0;">
                                         <h4 class="preview-panel-title"><i data-lucide="eye" class="icon-sm"></i> Gastos Detectados</h4>
-                                        <div class="preview-payer-selection">
-                                            <label for="import-default-payer"><i data-lucide="credit-card" class="icon-sm"></i> Quem pagou:</label>
+                                    </div>
+                                    <div class="preview-settings-bar" style="display: flex; flex-direction: column; gap: 10px; border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 4px;">
+                                        <div class="preview-payer-selection" style="display: flex; align-items: center; gap: 8px; font-size: 0.85em;">
+                                            <label for="import-default-payer" style="color: var(--text-muted); font-weight: 500; display: flex; align-items: center; gap: 4px;"><i data-lucide="credit-card" class="icon-sm"></i> Quem pagou:</label>
                                             <select id="import-default-payer"></select>
+                                        </div>
+                                        <div class="preview-participants-selection" style="font-size: 0.85em; display: flex; flex-direction: column; gap: 4px;">
+                                            <span style="color: var(--text-muted); font-weight: 500; display: flex; align-items: center; gap: 4px;"><i data-lucide="users" class="icon-sm"></i> Quem participa:</span>
+                                            <div id="import-participants-list" class="checkbox-group" style="margin-top: 4px; gap: 6px;">
+                                                <!-- Participantes serão injetados via JS -->
+                                            </div>
                                         </div>
                                     </div>
                                     
@@ -426,10 +434,10 @@
     <script src="js/expense.js"></script>
     <script src="js/calculations.js"></script>
     <script src="js/app-core.js"></script>
-    <script src="js/app-expenses.js"></script>
-    <script src="js/app-summary.js"></script>
+    <script src="js/app-expenses.js?v=2"></script>
+    <script src="js/app-summary.js?v=2"></script>
     <script src="js/app-quick-split.js"></script>
-    <script src="js/app-import.js"></script>
+    <script src="js/app-import.js?v=2"></script>
     
     <script>
         // Inicializar ícones do Lucide

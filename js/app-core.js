@@ -99,6 +99,11 @@ const App = {
         SummaryManager.update();
         HistoryManager.render();
         this.checkExpenseButtonState();
+
+        if (typeof NubankImporter !== 'undefined') {
+            NubankImporter.updatePayerDropdown();
+            NubankImporter.updateParticipantsList();
+        }
     },
 
     renderPeopleList() {

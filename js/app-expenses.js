@@ -147,8 +147,162 @@ const ExpenseManager = {
             return;
         }
         list.innerHTML = '';
-        active.forEach(e => list.appendChild(this._createExpenseItem(e, false)));
+
+        // Separar parcelas agrupáveis e despesas normais
+        const installmentGroups = {};
+        const normalExpenses = [];
+
+        active.forEach(e => {
+            if (e.installmentGroup) {
+                if (!installmentGroups[e.installmentGroup]) {
+                    installmentGroups[e.installmentGroup] = {
+                        currentCycle: [],
+                        historyCycle: []
+                    };
+                }
+                installmentGroups[e.installmentGroup].currentCycle.push(e);
+            } else {
+                normalExpenses.push(e);
+            }
+        });
+
+        // Buscar parcelas no histórico de ciclos arquivados
+        Object.keys(installmentGroups).forEach(groupName => {
+            const group = installmentGroups[groupName];
+            
+            if (window.App && App.archivedCycles) {
+                App.archivedCycles.forEach(cycle => {
+                    const cycleExpenses = cycle.expenses || [];
+                    cycleExpenses.forEach(histExp => {
+                        if (histExp.installmentGroup === groupName && !histExp.isPending) {
+                            // Encontrar o período formatado do ciclo
+                            const startStr = window.formatDate ? formatDate(cycle.startDate) : cycle.startDate;
+                            const endStr = window.formatDate ? formatDate(cycle.endDate) : cycle.endDate;
+                            group.historyCycle.push({
+                                ...histExp,
+                                cyclePeriod: `${startStr} — ${endStr}`,
+                                isHistorical: true
+                            });
+                        }
+                    });
+                });
+            }
+        });
+
+        // Renderizar grupos de parcelas
+        Object.entries(installmentGroups).forEach(([groupName, group]) => {
+            const allInstallments = [...group.currentCycle, ...group.historyCycle];
+            const installmentNumbers = allInstallments.map(e => e.installmentCurrent || 0);
+            const minInstallment = installmentNumbers.length > 0 ? Math.min(...installmentNumbers) : 999;
+            
+            // Só associa o histórico se tivermos registrado desde a parcela 1
+            const useHistory = minInstallment === 1;
+            list.appendChild(this._createInstallmentGroup(groupName, group.currentCycle, useHistory ? group.historyCycle : []));
+        });
+
+        // Renderizar despesas normais
+        normalExpenses.forEach(e => list.appendChild(this._createExpenseItem(e, false)));
+
         if (window.lucide) lucide.createIcons();
+    },
+
+    _createInstallmentGroup(groupName, currentExpenses, historyExpenses) {
+        const hasHistory = historyExpenses.length > 0;
+        const allExpenses = [...currentExpenses, ...historyExpenses];
+        
+        // Ordenar todas as parcelas pelo número
+        allExpenses.sort((a, b) => (a.installmentCurrent || 0) - (b.installmentCurrent || 0));
+
+        const maxCurrent = Math.max(...allExpenses.map(e => e.installmentCurrent || 0));
+        const total = currentExpenses[0].installmentTotal || maxCurrent;
+        
+        // O acumulado é o total pago (histórico + atual) se há histórico, senão apenas o atual
+        const displayedExpenses = hasHistory ? allExpenses : currentExpenses;
+        const totalAmount = displayedExpenses.reduce((sum, e) => sum + e.amount, 0);
+        const isComplete = maxCurrent === total;
+
+        // Capitalizar o nome do grupo
+        const displayName = groupName.charAt(0).toUpperCase() + groupName.slice(1);
+        const groupId = `installment-group-${groupName.replace(/[^a-z0-9]/gi, '-')}`;
+
+        const li = document.createElement('li');
+        li.className = 'installment-group' + (isComplete ? ' installment-complete' : '');
+        li.id = groupId;
+
+        let itemsHTML = '';
+        allExpenses.forEach(e => {
+            const dateStr = e.date ? formatDate(e.date) : '';
+            if (e.isHistorical) {
+                itemsHTML += `
+                    <div class="installment-item historical-item" style="opacity: 0.65; background: var(--border); border-style: dashed;">
+                        <div class="installment-item-info">
+                            <span class="installment-item-label" style="text-decoration: line-through; color: var(--text-muted);">Parcela ${e.installmentCurrent}/${e.installmentTotal} (Paga)</span>
+                            <span class="installment-item-date">${dateStr} · Período: ${e.cyclePeriod}</span>
+                        </div>
+                        <div class="installment-item-right">
+                            <span class="installment-item-amount" style="color: var(--text-muted);">R$ ${e.amount.toFixed(2)}</span>
+                            <span class="import-badge" style="background: rgba(16, 185, 129, 0.08); color: var(--green); border: 1px solid rgba(16, 185, 129, 0.15); margin-left: 8px; font-size: 0.75em;"><i data-lucide="archive" class="icon-sm"></i> Arquivado</span>
+                        </div>
+                    </div>`;
+            } else {
+                itemsHTML += `
+                    <div class="installment-item">
+                        <div class="installment-item-info">
+                            <span class="installment-item-label">Parcela ${e.installmentCurrent}/${e.installmentTotal}</span>
+                            <span class="installment-item-date">${dateStr}</span>
+                        </div>
+                        <div class="installment-item-right">
+                            <span class="installment-item-amount">R$ ${e.amount.toFixed(2)}</span>
+                            <div class="button-group" style="margin-left: 8px;">
+                                <button class="btn-primary btn-sm" onclick="ExpenseManager.edit(${e.id})">Editar</button>
+                                <button class="btn-danger btn-sm" onclick="ExpenseManager.delete(${e.id})">Excluir</button>
+                            </div>
+                        </div>
+                    </div>`;
+            }
+        });
+
+        // PROGRESS BAR SEGMENTADA
+        let progressHTML = '';
+        if (total > 0) {
+            progressHTML += `<div class="installment-progress-segmented">`;
+            for (let i = 1; i <= total; i++) {
+                const isActive = i <= maxCurrent;
+                const isSegmentComplete = isComplete;
+                progressHTML += `<div class="installment-segment ${isActive ? 'active' : ''} ${isSegmentComplete ? 'complete' : ''}" title="Parcela ${i}/${total}"></div>`;
+            }
+            progressHTML += `</div>`;
+        } else {
+            // Fallback para barra contínua se total for inválido
+            const progressPct = total > 0 ? (maxCurrent / total) * 100 : 0;
+            progressHTML += `
+                <div class="installment-progress-track">
+                    <div class="installment-progress-fill ${isComplete ? 'complete' : ''}" style="width: ${progressPct}%"></div>
+                </div>`;
+        }
+
+        li.innerHTML = `
+            <div class="installment-group-header" onclick="document.getElementById('${groupId}-details').toggleAttribute('open')">
+                <div class="installment-group-info">
+                    <span class="installment-group-name"><i data-lucide="credit-card" class="icon-sm"></i> ${displayName}</span>
+                    <div class="installment-group-meta">
+                        <span class="installment-badge ${isComplete ? 'installment-badge-complete' : ''}">
+                            <i data-lucide="${isComplete ? 'check-circle' : 'clock'}" class="icon-sm"></i>
+                            ${isComplete ? 'Quitada' : `${maxCurrent}/${total} parcelas`}
+                        </span>
+                        <span class="installment-group-total">${hasHistory ? 'Total Pago: ' : 'Acumulado: '}R$ ${totalAmount.toFixed(2)}</span>
+                    </div>
+                </div>
+                ${progressHTML}
+            </div>
+            <details id="${groupId}-details" class="installment-group-details">
+                <summary>Ver parcelas individuais (${allExpenses.length})</summary>
+                <div class="installment-items-list">
+                    ${itemsHTML}
+                </div>
+            </details>
+        `;
+        return li;
     },
 
     _createExpenseItem(exp, isPendingItem) {
@@ -159,11 +313,15 @@ const ExpenseManager = {
         if (exp.isRecurring) {
             badges += `<span class="badge badge-recurring"><i data-lucide="repeat" class="icon-sm"></i> ${exp.isFixedValue ? 'Fixa' : 'Variável'}</span>`;
         }
-        if (exp.frequency) {
+        if (exp.frequency && exp.isRecurring) {
             badges += `<span class="badge badge-frequency">${exp.frequency}</span>`;
         }
         if (isPendingItem) {
             badges += '<span class="badge badge-pending"><i data-lucide="alert-triangle" class="icon-sm"></i> Valor pendente</span>';
+        }
+        // Badge de parcela para despesas que não foram agrupadas (ex: parcela única importada)
+        if (exp.installmentGroup && exp.installmentCurrent && exp.installmentTotal) {
+            badges += `<span class="badge badge-recurring"><i data-lucide="credit-card" class="icon-sm"></i> Parcela ${exp.installmentCurrent}/${exp.installmentTotal}</span>`;
         }
 
         const dateStr = exp.date ? `<small class="expense-date"><i data-lucide="calendar" class="icon-sm"></i> ${formatDate(exp.date)}</small>` : '';
